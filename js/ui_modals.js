@@ -496,6 +496,7 @@ function renderLandingView() {
                 <div>초기 자본: <strong>${formatKRW(state.initialInvestment)}</strong></div>
                 <div>최종 자산: <strong style="color:var(--color-indigo); font-size:16px;">${formatKRW(simResult.metrics.endingAssets)}</strong></div>
                 <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="downloadScenario('${name}')">저장</button>
                     <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="enterEditMode('${name}')">편집</button>
                     <button class="btn btn-secondary btn-delete" style="padding: 6px 14px; font-size: 13px; width: auto; height: auto; margin: 0; display: inline-block; line-height: normal;" onclick="deleteScenario('${name}')">삭제</button>
                 </div>
@@ -751,4 +752,62 @@ function syncInputsToState() {
     currentState.birthDate = document.getElementById('birth-year-month').value;
     currentState.startDate = document.getElementById('start-year-month').value;
     document.getElementById('initial-investment-krw').textContent = formatKRW(currentState.initialInvestment);
+}
+
+function downloadScenario(name) {
+    let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
+    if (!presets[name]) return;
+    const dataStr = JSON.stringify(presets[name], null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name + ".json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 0);
+}
+
+function loadScenarioFromFile(event) {
+    const input = event.target;
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            // Basic validation
+            if (typeof data !== 'object' || data === null) throw new Error("Invalid format");
+            
+            let baseName = file.name.replace(/\.json$/i, '');
+            let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
+            let finalName = baseName;
+            let counter = 1;
+            while (presets[finalName]) {
+                finalName = baseName + ` (${counter})`;
+                counter++;
+            }
+            presets[finalName] = data;
+            localStorage.setItem('mbot_life_presets', JSON.stringify(presets));
+            alert(finalName + " 시나리오가 성공적으로 로딩되었습니다.");
+            
+            // Try to render the landing view
+            if (typeof renderLandingView === 'function') {
+                renderLandingView();
+            }
+        } catch (error) {
+            console.error(error);
+            alert("유효하지 않은 시나리오 파일입니다.");
+        } finally {
+            input.value = ""; // Reset input
+        }
+    };
+    reader.onerror = function() {
+        alert("파일을 읽는 중 오류가 발생했습니다.");
+        input.value = "";
+    };
+    reader.readAsText(file);
 }
