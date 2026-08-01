@@ -628,13 +628,16 @@ function deleteScenario(name) {
 
 function renameActiveScenarioInline(newName) {
     if (!newName || !activeScenarioName) return;
-    if (newName === activeScenarioName) return;
+    newName = newName.trim();
+    if (!newName || newName === activeScenarioName) return;
     
     let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
     if (presets[newName]) {
         alert("이미 존재하는 이름입니다.");
         const scenarioTitle = document.getElementById('active-scenario-title');
         if (scenarioTitle) scenarioTitle.value = activeScenarioName;
+        const stepTitleInput = document.getElementById('step-scenario-title');
+        if (stepTitleInput) stepTitleInput.value = activeScenarioName;
         return;
     }
     
@@ -642,6 +645,11 @@ function renameActiveScenarioInline(newName) {
     delete presets[activeScenarioName];
     localStorage.setItem('mbot_life_presets', JSON.stringify(presets));
     activeScenarioName = newName;
+    
+    const scenarioTitle = document.getElementById('active-scenario-title');
+    if (scenarioTitle) scenarioTitle.value = activeScenarioName;
+    const stepTitleInput = document.getElementById('step-scenario-title');
+    if (stepTitleInput) stepTitleInput.value = activeScenarioName;
 }
 
 let currentStep = 'list'; // 'list' | 'inputs' | 'results'
@@ -657,10 +665,12 @@ function navigateToStep(stepName) {
     
     const prevBtn = document.getElementById('btn-step-prev');
     const nextBtn = document.getElementById('btn-step-next');
-    const numBadge = document.getElementById('step-nav-number');
-    const titleText = document.getElementById('step-nav-title');
-    
+    const stepTitleInput = document.getElementById('step-scenario-title');
     const stepNavBar = document.getElementById('step-nav-bar');
+    
+    if (stepTitleInput) {
+        stepTitleInput.value = activeScenarioName || '시나리오';
+    }
     
     if (stepName === 'list') {
         saveLandingState();
@@ -671,8 +681,6 @@ function navigateToStep(stepName) {
     } else if (stepName === 'inputs') {
         container.classList.add('step-inputs', 'mode-editor', 'mobile-show-inputs');
         if (stepNavBar) stepNavBar.style.display = 'flex';
-        if (numBadge) numBadge.textContent = '2 / 3 단계';
-        if (titleText) titleText.textContent = `설정 & 입력 (${activeScenarioName || '시나리오'})`;
         
         if (prevBtn) {
             prevBtn.disabled = false;
@@ -688,8 +696,6 @@ function navigateToStep(stepName) {
     } else if (stepName === 'results') {
         container.classList.add('step-results', 'mode-editor', 'mobile-show-results');
         if (stepNavBar) stepNavBar.style.display = 'flex';
-        if (numBadge) numBadge.textContent = '3 / 3 단계';
-        if (titleText) titleText.textContent = `결과 그래프 & 명세 (${activeScenarioName || '시나리오'})`;
         
         if (prevBtn) {
             prevBtn.disabled = false;
