@@ -1117,6 +1117,20 @@ table tbody tr:nth-child(even) {
         max-width: 100% !important;
         padding: 0 !important;
     }
+    
+    .scenario-actions-bar {
+        gap: 6px !important;
+        margin-bottom: 14px !important;
+    }
+    
+    .scenario-actions-bar .btn-sm {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        flex: 1 1 auto;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+    }
 }
     
     /* Metrics Summary Cards Grid for Tablet/Mobile */
