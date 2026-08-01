@@ -890,13 +890,31 @@ function renderLandingComparisonChart(comparisonData) {
         colors: ['#6366f1', '#10b981', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4'],
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
-        xaxis: { categories: yearsLabels },
+        xaxis: { 
+            categories: yearsLabels,
+            labels: {
+                rotate: -90,
+                rotateAlways: true,
+                style: {
+                    fontSize: '12px',
+                    colors: '#9ca3af'
+                }
+            }
+        },
         yaxis: {
             labels: {
                 formatter: function(value) { return (value / 100000000).toFixed(1) + ' 억'; }
             }
         },
-        grid: { borderColor: 'rgba(255, 255, 255, 0.05)' },
+        grid: { 
+            borderColor: 'rgba(255, 255, 255, 0.05)',
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }
+        },
         tooltip: {
             theme: 'dark',
             custom: function({ series, seriesIndex, dataPointIndex, w }) {

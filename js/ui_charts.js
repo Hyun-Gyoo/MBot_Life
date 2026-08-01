@@ -232,6 +232,14 @@ function renderActiveCashflowChart() {
         },
         xaxis: {
             categories: simulationResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`),
+            labels: {
+                rotate: -90,
+                rotateAlways: true,
+                style: {
+                    fontSize: '12px',
+                    colors: '#9ca3af'
+                }
+            },
             axisBorder: { show: false },
             axisTicks: { show: false }
         },
@@ -244,6 +252,12 @@ function renderActiveCashflowChart() {
         },
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.05)',
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            },
             yaxis: { lines: { show: true } }
         },
         legend: {
@@ -351,6 +365,14 @@ function renderComparisonChart(comparisonData) {
         },
         xaxis: {
             categories: yearsLabels,
+            labels: {
+                rotate: -90,
+                rotateAlways: true,
+                style: {
+                    fontSize: '12px',
+                    colors: '#9ca3af'
+                }
+            },
             axisBorder: { show: false },
             axisTicks: { show: false }
         },
@@ -363,6 +385,12 @@ function renderComparisonChart(comparisonData) {
         },
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.05)',
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            },
             yaxis: { lines: { show: true } },
             xaxis: { lines: { show: false } }
         },
