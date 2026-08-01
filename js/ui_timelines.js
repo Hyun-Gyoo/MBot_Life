@@ -238,3 +238,46 @@ function deleteOnetimeFlow(index) {
     renderOneTimeFlows();
     runSimulation();
 }
+
+function renderBalanceHistory() {
+    const list = document.getElementById('balance-history-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    if (!currentState.balanceHistory) currentState.balanceHistory = [];
+    
+    // Sort by date ascending
+    currentState.balanceHistory.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    
+    currentState.balanceHistory.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'timeline-item';
+        div.innerHTML = `
+            <div style="margin-bottom: 8px;">
+                <input type="text" value="${item.label || ''}" placeholder="메모 (이름)" onchange="updateBalanceHistory(${index}, 'label', this.value); runSimulation();" style="width: 100%; text-align: left; font-size: 15px; font-weight: bold; height: 38px; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid var(--border-color); border-radius: 0; padding: 4px 0; color: white;">
+            </div>
+            <div style="margin-bottom: 8px;">
+                <input type="month" value="${item.date}" onchange="updateBalanceHistory(${index}, 'date', this.value); renderBalanceHistory(); runSimulation();" style="width: 100%; height: 38px; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <input type="text" inputmode="numeric" value="${Number(item.amount).toLocaleString()}" placeholder="금액 (원)" oninput="formatInputWithComma(this)" onchange="updateBalanceHistory(${index}, 'amount', this.value); runSimulation();" style="flex: 1; text-align:right; height: 38px; box-sizing: border-box;">
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-secondary" onclick="openAddItemModal('balanceHistory', ${index})" style="height: 38px; padding: 0 16px; margin: 0; box-sizing: border-box;">수정</button>
+                    <button class="btn btn-secondary btn-delete" onclick="deleteBalanceHistory(${index})" style="height: 38px; padding: 0 16px; margin: 0; box-sizing: border-box; width: auto; display: flex; align-items: center; justify-content: center;">삭제</button>
+                </div>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function updateBalanceHistory(index, key, val) {
+    if (key === 'amount') val = Number(String(val).replace(/,/g, ''));
+    currentState.balanceHistory[index][key] = val;
+}
+
+function deleteBalanceHistory(index) {
+    currentState.balanceHistory.splice(index, 1);
+    renderBalanceHistory();
+    runSimulation();
+}

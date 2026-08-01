@@ -360,6 +360,26 @@ function openAddItemModal(type, editIndex = null) {
         `;
         submitBtn.onclick = () => submitModalItem(type);
         if (window.updateModalOTPreview) setTimeout(updateModalOTPreview, 100);
+        
+    } else if (type === 'balanceHistory') {
+        const item = isEdit ? currentState.balanceHistory[editIndex] : null;
+        title.textContent = isEdit ? '실제 보유 자산 점검 수정' : '실제 보유 자산 점검 추가';
+        const todayYM = new Date().toISOString().substring(0, 7);
+        fields.innerHTML = `
+            <div class="input-group">
+                <label>점검 년월 (발생일)</label>
+                <input type="month" id="modal-bh-date" value="${item ? item.date : todayYM}">
+            </div>
+            <div class="input-group">
+                <label>실제 보유 금액 (원)</label>
+                <input type="text" inputmode="numeric" id="modal-bh-amount" value="${item ? Number(item.amount).toLocaleString() : '400,000,000'}" style="text-align:right;" oninput="formatInputWithComma(this)">
+            </div>
+            <div class="input-group">
+                <label>설명 (메모)</label>
+                <input type="text" id="modal-bh-label" value="${item ? (item.label || '') : '실제 보유 자산 점검'}">
+            </div>
+        `;
+        submitBtn.onclick = () => submitModalItem(type);
     }
     
     modal.style.display = 'flex';
@@ -467,6 +487,23 @@ function submitModalItem(type) {
         if (isEdit) currentState.onetimeFlow[currentEditIndex] = data;
         else currentState.onetimeFlow.push(data);
         renderOneTimeFlows();
+        
+    } else if (type === 'balanceHistory') {
+        const date = document.getElementById('modal-bh-date').value;
+        const amount = Number(document.getElementById('modal-bh-amount').value.replace(/,/g, ''));
+        const label = document.getElementById('modal-bh-label').value;
+        if (!date || isNaN(amount)) return alert('필수 항목을 입력하세요.');
+        
+        if (!currentState.balanceHistory) currentState.balanceHistory = [];
+        
+        const data = {
+            id: isEdit ? currentState.balanceHistory[currentEditIndex].id : "bh-" + Date.now(), 
+            date, amount, label
+        };
+        
+        if (isEdit) currentState.balanceHistory[currentEditIndex] = data;
+        else currentState.balanceHistory.push(data);
+        renderBalanceHistory();
     }
     
     closeModal();
@@ -656,6 +693,7 @@ function syncStateToInputs() {
     if (initKrw) initKrw.textContent = formatKRW(currentState.initialInvestment);
     const currKrw = document.getElementById('current-balance-krw');
     if (currKrw) currKrw.textContent = formatKRW(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment);
+    if (typeof renderBalanceHistory === 'function') renderBalanceHistory();
 }
 
 function runLandingComparison() {

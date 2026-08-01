@@ -17,6 +17,16 @@ function simulateScenario(state) {
     
     const totalMonths = YR * 12;
     
+    // Map balance history by date
+    const balanceHistoryMap = {};
+    if (state.balanceHistory && state.balanceHistory.length > 0) {
+        state.balanceHistory.forEach(bh => {
+            if (bh.date && bh.amount !== undefined) {
+                balanceHistoryMap[bh.date] = Number(bh.amount);
+            }
+        });
+    }
+    
     for (let m = 0; m < totalMonths; m++) {
         const currentYM = addMonths(startYM, m);
         const [yearStr, monthStr] = currentYM.split('-');
@@ -26,6 +36,10 @@ function simulateScenario(state) {
         // If currentYM matches currentDate, resync asset balance to targetCurrentBalance
         if (currentDate && currentYM === currentDate) {
             currentBalance = targetCurrentBalance;
+        }
+        // If currentYM matches a balance history entry, resync asset balance to recorded snapshot
+        if (balanceHistoryMap[currentYM] !== undefined) {
+            currentBalance = balanceHistoryMap[currentYM];
         }
         
         // Calculate age

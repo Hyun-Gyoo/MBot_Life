@@ -88,18 +88,12 @@
                         <p class="helper-text" id="initial-investment-krw">3억 5,000만원</p>
                     </div>
 
-                    <div class="input-group">
-                        <label for="current-date">현재 날짜</label>
-                        <input type="month" id="current-date" value="2026-08">
+                    <div class="section-title-row" style="margin-top: 24px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin: 0;">실제 보유 자산 점검 이력</h3>
+                        <button class="btn-add" onclick="openAddItemModal('balanceHistory')">+ 추가</button>
                     </div>
-
-                    <div class="input-group">
-                        <label for="current-balance">현재 보유금</label>
-                        <div class="input-wrapper">
-                            <input type="text" inputmode="numeric" id="current-balance" value="350,000,000" oninput="formatInputWithComma(this)">
-                            <span class="unit">원</span>
-                        </div>
-                        <p class="helper-text" id="current-balance-krw">3억 5,000만원</p>
+                    <div class="timeline-list" id="balance-history-list">
+                        <!-- Dynamically filled -->
                     </div>
                 </div>
 
@@ -362,15 +356,15 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <!-- App Modules -->
-    <script src="js/state.js?v=21"></script>
-    <script src="js/helpers.js?v=21"></script>
-    <script src="js/ui_timelines.js?v=21"></script>
-    <script src="js/ui_modals.js?v=21"></script>
-    <script src="js/simulation.js?v=21"></script>
-    <script src="js/app_core.js?v=21"></script>
-    <script src="js/ui_charts.js?v=21"></script>
-    <script src="js/export.js?v=21"></script>
-    <script src="js/main.js?v=21"></script>
+    <script src="js/state.js?v=22"></script>
+    <script src="js/helpers.js?v=22"></script>
+    <script src="js/ui_timelines.js?v=22"></script>
+    <script src="js/ui_modals.js?v=22"></script>
+    <script src="js/simulation.js?v=22"></script>
+    <script src="js/app_core.js?v=22"></script>
+    <script src="js/ui_charts.js?v=22"></script>
+    <script src="js/export.js?v=22"></script>
+    <script src="js/main.js?v=22"></script>
 
 </body>
 </html>

@@ -16,6 +16,16 @@ function generateDetailedLogs(state) {
     
     let allLogs = [];
     
+    // Map balance history by date
+    const balanceHistoryMap = {};
+    if (state.balanceHistory && state.balanceHistory.length > 0) {
+        state.balanceHistory.forEach(bh => {
+            if (bh.date && bh.amount !== undefined) {
+                balanceHistoryMap[bh.date] = Number(bh.amount);
+            }
+        });
+    }
+    
     for (let m = 0; m < totalMonths; m++) {
         const currentYM = addMonths(startYM, m);
         const [yearStr, monthStr] = currentYM.split('-');
@@ -24,6 +34,9 @@ function generateDetailedLogs(state) {
         
         if (currentDate && currentYM === currentDate) {
             currentBalance = targetCurrentBalance;
+        }
+        if (balanceHistoryMap[currentYM] !== undefined) {
+            currentBalance = balanceHistoryMap[currentYM];
         }
         
         const ageYears = currentYear - bYear;

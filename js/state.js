@@ -10,6 +10,9 @@ const DEFAULT_SCENARIO = {
     currentDate: "2026-08",
     currentBalance: 350000000,
     
+    // 실제 보유 자산 점검 이력
+    balanceHistory: [],
+    
     // 월 정기 수입
     monthlyIncome: [],
     
