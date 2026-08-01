@@ -1853,7 +1853,7 @@ function renderActiveCashflowChart() {
                 const outflows = yrLogs.filter(l => l.amount < 0);
                 
                 if (inflows.length > 0) {
-                    const labelText = inflows.map(l => `${l.name} (+${formatKRW(l.amount)})`).join('\n');
+                    const labelText = inflows.map(l => `${l.name} (+${formatKRW(l.amount)})`);
                     const totalInflow = Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow);
                     pointsAnnotations.push({
                         x: `${yr.year}년`,
@@ -1875,13 +1875,13 @@ function renderActiveCashflowChart() {
                                 fontWeight: 'bold',
                                 padding: { left: 6, right: 6, top: 4, bottom: 4 }
                             },
-                            text: labelText
+                            text: labelText.length === 1 ? labelText[0] : labelText
                         }
                     });
                 }
                 
                 if (outflows.length > 0) {
-                    const labelText = outflows.map(l => `${l.name} (-${formatKRW(Math.abs(l.amount))})`).join('\n');
+                    const labelText = outflows.map(l => `${l.name} (-${formatKRW(Math.abs(l.amount))})`);
                     const totalOutflow = Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow);
                     pointsAnnotations.push({
                         x: `${yr.year}년`,
@@ -1903,7 +1903,7 @@ function renderActiveCashflowChart() {
                                 fontWeight: 'bold',
                                 padding: { left: 6, right: 6, top: 4, bottom: 4 }
                             },
-                            text: labelText
+                            text: labelText.length === 1 ? labelText[0] : labelText
                         }
                     });
                 }
