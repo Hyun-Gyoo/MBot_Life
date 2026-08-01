@@ -261,23 +261,6 @@ function renderComparisonChart(comparisonData) {
         legend: {
             position: 'top',
             horizontalAlign: 'left'
-        },
-        annotations: {
-            xaxis: [
-                {
-                    x: '2032년 (만 62세)', // Vertical line for expected retirement (based on 2032-06, matching June 2032)
-                    borderColor: '#f59e0b',
-                    strokeDashArray: 4,
-                    label: {
-                        borderColor: '#f59e0b',
-                        style: {
-                            color: '#fff',
-                            background: '#f59e0b'
-                        },
-                        text: '은퇴 예상시점'
-                    }
-                }
-            ]
         }
     };
 
