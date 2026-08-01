@@ -712,12 +712,12 @@ function navigateToStep(stepName) {
         
         runSimulation();
         
-        // Double trigger renderCharts after paint
-        requestAnimationFrame(() => {
-            if (typeof renderCharts === 'function') renderCharts();
+        // Double trigger renderCharts after paint and layout flush for Android Galaxy Chrome
+        [30, 100, 250, 500].forEach(delay => {
             setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
                 if (typeof renderCharts === 'function') renderCharts();
-            }, 100);
+            }, delay);
         });
     }
 }
@@ -870,6 +870,13 @@ let landingChart = null;
 function renderLandingComparisonChart(comparisonData) {
     if (comparisonData.length === 0) {
         if (landingChart) landingChart.updateSeries([]);
+        return;
+    }
+    
+    const containerEl = document.querySelector("#landing-comparison-chart");
+    if (!containerEl) return;
+    if (containerEl.clientWidth === 0 && containerEl.offsetWidth === 0) {
+        setTimeout(() => renderLandingComparisonChart(comparisonData), 30);
         return;
     }
     

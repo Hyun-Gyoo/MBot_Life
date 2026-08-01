@@ -116,6 +116,13 @@ function renderTable() {
 
 // Renders inflow vs outflow bar chart for currently edited scenario
 function renderActiveCashflowChart() {
+    const containerEl = document.querySelector("#cashflow-chart");
+    if (!containerEl) return;
+    if (containerEl.clientWidth === 0 && containerEl.offsetWidth === 0) {
+        setTimeout(renderActiveCashflowChart, 30);
+        return;
+    }
+    
     const totalInflowData = simulationResults.map(yr => Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow + (yr.investmentReturn || 0)));
     const totalOutflowData = simulationResults.map(yr => Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow));
     
@@ -321,6 +328,13 @@ function renderActiveCashflowChart() {
 function renderComparisonChart(comparisonData) {
     if (comparisonData.length === 0) {
         if (assetChart) assetChart.updateSeries([]);
+        return;
+    }
+    
+    const containerEl = document.querySelector("#assets-chart");
+    if (!containerEl) return;
+    if (containerEl.clientWidth === 0 && containerEl.offsetWidth === 0) {
+        setTimeout(() => renderComparisonChart(comparisonData), 30);
         return;
     }
     
