@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
     <!-- Top Step Navigation Bar (Hidden on List page by default) -->
@@ -17,7 +17,7 @@
             ◀ 이전
         </button>
         <div class="step-nav-indicator">
-            <input type="text" id="step-scenario-title" class="step-title-input" onchange="renameActiveScenarioInline(this.value)" placeholder="시나리오 제목" />
+            <input type="text" id="step-scenario-title" class="step-title-input" onchange="renameActiveScenarioInline(this.value)" placeholder="플랜 제목" />
         </div>
         <button id="btn-step-next" class="step-nav-btn btn-next" onclick="navigateToNextStep()">
             다음 ▶
@@ -168,7 +168,7 @@
                 <header class="dashboard-header" style="margin-bottom: 16px;">
                     <div>
                         <h2 style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MBot 라이프 플래너</h2>
-                        <p style="color: var(--text-secondary); font-size: 16px; margin-top: 4px;">여러 시나리오를 생성, 비교, 삭제하며 최적의 자산 흐름을 시뮬레이션해 보세요.</p>
+                        <p style="color: var(--text-secondary); font-size: 16px; margin-top: 4px;">여러 플랜을 생성, 비교, 삭제하며 최적의 자산 흐름을 시뮬레이션해 보세요.</p>
                     </div>
                 </header>
 
@@ -191,7 +191,7 @@
                         <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right: 4px; vertical-align: middle;">
                             <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                         </svg>
-                        새 시나리오 생성
+                        새 플랜 생성
                     </button>
                 </div>
 
@@ -203,8 +203,8 @@
                 <!-- Scenario Comparison Results -->
                 <div class="table-card" id="landing-comparison-area" style="margin-top: 40px; display: none;">
                     <div class="table-header">
-                        <h3 style="font-size: 23px; font-weight: 800; margin-bottom: 4px;">선택 시나리오 자산 추이 비교</h3>
-                        <p style="color: var(--text-secondary); font-size: 16px;">선택된 시나리오들의 자산 성장 흐름과 주요 수치를 실시간 대조합니다.</p>
+                        <h3 style="font-size: 23px; font-weight: 800; margin-bottom: 4px;">선택 플랜 자산 추이 비교</h3>
+                        <p style="color: var(--text-secondary); font-size: 16px;">선택된 플랜들의 자산 성장 흐름과 주요 수치를 실시간 대조합니다.</p>
                     </div>
                     
                     <div class="charts-grid" style="grid-template-columns: 1fr; margin-top: 20px; margin-bottom: 24px;">
@@ -374,15 +374,15 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <!-- App Modules -->
-    <script src="js/state.js?v=36"></script>
-    <script src="js/helpers.js?v=36"></script>
-    <script src="js/ui_timelines.js?v=36"></script>
-    <script src="js/ui_modals.js?v=36"></script>
-    <script src="js/simulation.js?v=36"></script>
-    <script src="js/app_core.js?v=36"></script>
-    <script src="js/ui_charts.js?v=36"></script>
-    <script src="js/export.js?v=36"></script>
-    <script src="js/main.js?v=36"></script>
+    <script src="js/state.js?v=37"></script>
+    <script src="js/helpers.js?v=37"></script>
+    <script src="js/ui_timelines.js?v=37"></script>
+    <script src="js/ui_modals.js?v=37"></script>
+    <script src="js/simulation.js?v=37"></script>
+    <script src="js/app_core.js?v=37"></script>
+    <script src="js/ui_charts.js?v=37"></script>
+    <script src="js/export.js?v=37"></script>
+    <script src="js/main.js?v=37"></script>
 
 </body>
 </html>

@@ -324,7 +324,7 @@ function runSimulation() {
     
     // Render the active scenario's asset projection line chart in editor view
     renderComparisonChart([{
-        name: activeScenarioName || "현재 시나리오",
+        name: activeScenarioName || "현재 플랜",
         results: simulationResults,
         metrics: sim.metrics,
         state: currentState

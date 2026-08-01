@@ -523,7 +523,7 @@ function saveLandingState() {
         checked.push(cb.value);
     });
     localStorage.setItem('mbot_life_saved_selection', JSON.stringify(checked));
-    alert('현재 선택된 시나리오 비교 상태가 브라우저에 저장되었습니다.\n다음 접속 시에도 이 상태가 유지됩니다.');
+    alert('현재 선택된 플랜 비교 상태가 브라우저에 저장되었습니다.\n다음 접속 시에도 이 상태가 유지됩니다.');
 }
 
 
@@ -550,7 +550,7 @@ function renderLandingView() {
     grid.innerHTML = '';
     
     if (presetNames.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size:18px;">등록된 시나리오가 없습니다. "새 시나리오 생성"을 눌러보세요.</div>';
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size:18px;">등록된 플랜이 없습니다. "새 플랜 생성"을 눌러보세요.</div>';
         runLandingComparison();
         return;
     }
@@ -583,7 +583,7 @@ function renderLandingView() {
 }
 
 function createNewScenario() {
-    const name = prompt("새로운 시나리오의 이름을 입력하세요:");
+    const name = prompt("새로운 플랜의 이름을 입력하세요:");
     if (!name) return;
     let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
     if (presets[name]) {
@@ -599,7 +599,7 @@ function copySelectedScenario() {
     const grid = document.getElementById('scenario-cards-grid');
     const checked = grid.querySelectorAll('input[type="checkbox"]:checked');
     if (checked.length !== 1) {
-        alert("복사할 시나리오를 1개만 체크해주세요.");
+        alert("복사할 플랜을 1개만 체크해주세요.");
         return;
     }
     
@@ -619,7 +619,7 @@ function copySelectedScenario() {
 }
 
 function deleteScenario(name) {
-    if (!confirm(name + " 시나리오를 정말 삭제하시겠습니까?")) return;
+    if (!confirm(name + " 플랜을 정말 삭제하시겠습니까?")) return;
     let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
     delete presets[name];
     localStorage.setItem('mbot_life_presets', JSON.stringify(presets));
@@ -669,7 +669,7 @@ function navigateToStep(stepName) {
     const stepNavBar = document.getElementById('step-nav-bar');
     
     if (stepTitleInput) {
-        stepTitleInput.value = activeScenarioName || '시나리오';
+        stepTitleInput.value = activeScenarioName || '플랜';
     }
     
     if (stepName === 'list') {
@@ -1047,7 +1047,7 @@ function loadScenarioFromFile(event) {
             }
             presets[finalName] = data;
             localStorage.setItem('mbot_life_presets', JSON.stringify(presets));
-            alert(finalName + " 시나리오가 성공적으로 로딩되었습니다.");
+            alert(finalName + " 플랜이 성공적으로 로딩되었습니다.");
             
             // Try to render the landing view
             if (typeof renderLandingView === 'function') {
@@ -1055,7 +1055,7 @@ function loadScenarioFromFile(event) {
             }
         } catch (error) {
             console.error(error);
-            alert("유효하지 않은 시나리오 파일입니다.");
+            alert("유효하지 않은 플랜 파일입니다.");
         } finally {
             input.value = ""; // Reset input
         }
