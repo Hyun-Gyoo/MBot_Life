@@ -26,6 +26,7 @@ const DEFAULT_SCENARIO = {
 
 let currentState = JSON.parse(JSON.stringify(DEFAULT_SCENARIO));
 let simulationResults = [];
+let simulationDetailedLogs = [];
 let assetChart = null;
 let cashflowChart = null;
 let activeScenarioName = "";

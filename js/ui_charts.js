@@ -50,38 +50,57 @@ function renderTable() {
     const tbody = document.querySelector('#simulation-table tbody');
     tbody.innerHTML = '';
     
-    // Update table headers based on inflation option
-    const tableHeaders = document.querySelectorAll('#simulation-table th');
-    if (tableHeaders.length >= 11) {
-        if (currentState.useRealValue) {
-            const realRate = (currentState.annualRate - currentState.inflationRate).toFixed(1);
-            tableHeaders[9].textContent = `실질 투자 수익 (${realRate}%)`;
-            tableHeaders[10].textContent = `기말 평가자산 (현재가치)`;
-        } else {
-            tableHeaders[9].textContent = `명목 투자 수익 (${currentState.annualRate}%)`;
-            tableHeaders[10].textContent = `기말 평가자산 (명목가치)`;
-        }
+    if (typeof generateDetailedLogs !== 'function') return;
+    
+    const logs = generateDetailedLogs(currentState);
+    
+    // Populate year filter
+    const yearFilter = document.getElementById('table-year-filter');
+    const selectedYear = yearFilter.value;
+    
+    // Get unique years
+    const years = [...new Set(logs.map(log => log.year))];
+    
+    // Rebuild options if needed
+    if (yearFilter.options.length <= 1 || yearFilter.options.length !== years.length + 1) {
+        const currentVal = yearFilter.value;
+        yearFilter.innerHTML = '<option value="all">전체 연도</option>';
+        years.forEach(yr => {
+            const opt = document.createElement('option');
+            opt.value = yr;
+            opt.textContent = `${yr}년`;
+            yearFilter.appendChild(opt);
+        });
+        yearFilter.value = currentVal;
     }
     
-    simulationResults.forEach(yr => {
+    // Filter logs
+    let filteredLogs = logs;
+    if (selectedYear !== 'all') {
+        const targetYear = parseInt(selectedYear, 10);
+        filteredLogs = logs.filter(log => log.year === targetYear);
+    }
+    
+    filteredLogs.forEach(log => {
         const row = document.createElement('tr');
         
-        const netLoans = yr.loanInflow - yr.loanRepayment;
-        const netOnetime = yr.onetimeInflow - yr.onetimeOutflow;
-        const regIncome = yr.regMonthlyIncome + yr.regAnnualIncome;
+        let amountClass = 'val-zero';
+        if (log.amount > 0) amountClass = 'val-positive';
+        else if (log.amount < 0) amountClass = 'val-negative';
+        
+        let amountRealClass = 'val-zero';
+        if (log.amountReal > 0) amountRealClass = 'val-positive';
+        else if (log.amountReal < 0) amountRealClass = 'val-negative';
         
         row.innerHTML = `
-            <td>${yr.year}년</td>
-            <td>만 ${yr.endAge}세</td>
-            <td>${formatNumber(yr.startingBalance)}</td>
-            <td class="val-positive">+${formatNumber(regIncome)}</td>
-            <td class="val-negative">-${formatNumber(yr.regMonthlyExpense)}</td>
-            <td class="${yr.loanInterest > 0 ? 'val-negative' : (yr.loanInterest < 0 ? 'val-positive' : 'val-zero')}">${yr.loanInterest > 0 ? '-' + formatNumber(yr.loanInterest) : (yr.loanInterest < 0 ? '+' + formatNumber(Math.abs(yr.loanInterest)) : '0원')}</td>
-            <td class="${netLoans > 0 ? 'val-positive' : (netLoans < 0 ? 'val-negative' : 'val-zero')}">${netLoans > 0 ? '+' + formatNumber(netLoans) : (netLoans < 0 ? '-' + formatNumber(Math.abs(netLoans)) : '0원')}</td>
-            <td class="${netOnetime > 0 ? 'val-positive' : (netOnetime < 0 ? 'val-negative' : 'val-zero')}">${netOnetime > 0 ? '+' : ''}${formatNumber(netOnetime)}</td>
-            <td class="${yr.netCashFlow > 0 ? 'val-positive' : (yr.netCashFlow < 0 ? 'val-negative' : 'val-zero')}">${yr.netCashFlow > 0 ? '+' : ''}${formatNumber(yr.netCashFlow)}</td>
-            <td class="val-positive">+${formatNumber(yr.investmentReturn)}</td>
-            <td class="val-total-assets ${yr.endingBalance < 0 ? 'val-negative' : ''}">${formatNumber(yr.endingBalance)}</td>
+            <td>${log.date}</td>
+            <td>만 ${log.age}세</td>
+            <td>${log.type}</td>
+            <td>${log.name}</td>
+            <td class="${amountRealClass}">${log.amountReal > 0 ? '+' : ''}${formatNumber(log.amountReal)}</td>
+            <td class="val-total-assets ${log.balanceReal < 0 ? 'val-negative' : ''}">${formatNumber(log.balanceReal)}</td>
+            <td class="${amountClass}">${log.amount > 0 ? '+' : ''}${formatNumber(log.amount)}</td>
+            <td class="val-total-assets ${log.balance < 0 ? 'val-negative' : ''}">${formatNumber(log.balance)}</td>
         `;
         
         tbody.appendChild(row);

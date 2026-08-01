@@ -1,4 +1,12 @@
-// --- Excel/CSV Data Exporter ---
+import os
+
+def run():
+    base_dir = r"c:\Users\jackm\MBot_Life"
+    
+    # 1. Update export.js
+    export_js_path = os.path.join(base_dir, "js", "export.js")
+    with open(export_js_path, "w", encoding="utf-8") as f:
+        f.write("""// --- Excel/CSV Data Exporter ---
 
 function generateDetailedLogs(state) {
     const YR = state.simulationPeriod;
@@ -171,16 +179,16 @@ function generateDetailedLogs(state) {
 function exportToCSV() {
     if (simulationResults.length === 0) return;
     
-    let csvContent = "\ufeff"; // UTF-8 BOM
-    csvContent += "발생년월,나이,구분,항목명,금액,평가자산,금액(물가반영),평가자산(물가반영)\n";
+    let csvContent = "\\ufeff"; // UTF-8 BOM
+    csvContent += "발생년월,나이,구분,항목명,금액,금액(물가반영),평가자산,평가자산(물가반영)\\n";
     
     const logs = generateDetailedLogs(currentState);
     
     // Add initial investment
-    csvContent += `${currentState.startDate},${Math.floor(Number(currentState.startDate.split('-')[0]) - Number(currentState.birthDate.split('-')[0]))},초기자본,투자원금,${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)}\n`;
+    csvContent += `${currentState.startDate},${Math.floor(Number(currentState.startDate.split('-')[0]) - Number(currentState.birthDate.split('-')[0]))},초기자본,투자원금,${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)}\\n`;
     
     for (const log of logs) {
-        csvContent += `${log.date},만 ${log.age}세,${log.type},"${log.name}",${Math.round(log.amountReal)},${Math.round(log.balanceReal)},${Math.round(log.amount)},${Math.round(log.balance)}\n`;
+        csvContent += `${log.date},만 ${log.age}세,${log.type},"${log.name}",${Math.round(log.amount)},${Math.round(log.amountReal)},${Math.round(log.balance)},${Math.round(log.balanceReal)}\\n`;
     }
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -192,3 +200,82 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
 }
+""")
+
+    # 2. Update ui_charts.js
+    ui_charts_path = os.path.join(base_dir, "js", "ui_charts.js")
+    with open(ui_charts_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    new_render_table = """function renderTable() {
+    const tbody = document.querySelector('#simulation-table tbody');
+    tbody.innerHTML = '';
+    
+    if (typeof generateDetailedLogs !== 'function') return;
+    
+    const logs = generateDetailedLogs(currentState);
+    
+    // Populate year filter
+    const yearFilter = document.getElementById('table-year-filter');
+    const selectedYear = yearFilter.value;
+    
+    // Get unique years
+    const years = [...new Set(logs.map(log => log.year))];
+    
+    // Rebuild options if needed
+    if (yearFilter.options.length <= 1 || yearFilter.options.length !== years.length + 1) {
+        const currentVal = yearFilter.value;
+        yearFilter.innerHTML = '<option value="all">전체 연도</option>';
+        years.forEach(yr => {
+            const opt = document.createElement('option');
+            opt.value = yr;
+            opt.textContent = `${yr}년`;
+            yearFilter.appendChild(opt);
+        });
+        yearFilter.value = currentVal;
+    }
+    
+    // Filter logs
+    let filteredLogs = logs;
+    if (selectedYear !== 'all') {
+        const targetYear = parseInt(selectedYear, 10);
+        filteredLogs = logs.filter(log => log.year === targetYear);
+    }
+    
+    filteredLogs.forEach(log => {
+        const row = document.createElement('tr');
+        
+        let amountClass = 'val-zero';
+        if (log.amount > 0) amountClass = 'val-positive';
+        else if (log.amount < 0) amountClass = 'val-negative';
+        
+        let amountRealClass = 'val-zero';
+        if (log.amountReal > 0) amountRealClass = 'val-positive';
+        else if (log.amountReal < 0) amountRealClass = 'val-negative';
+        
+        row.innerHTML = `
+            <td>${log.date}</td>
+            <td>만 ${log.age}세</td>
+            <td>${log.type}</td>
+            <td>${log.name}</td>
+            <td class="${amountClass}">${log.amount > 0 ? '+' : ''}${formatNumber(log.amount)}</td>
+            <td class="${amountRealClass}">${log.amountReal > 0 ? '+' : ''}${formatNumber(log.amountReal)}</td>
+            <td class="val-total-assets ${log.balance < 0 ? 'val-negative' : ''}">${formatNumber(log.balance)}</td>
+            <td class="val-total-assets ${log.balanceReal < 0 ? 'val-negative' : ''}">${formatNumber(log.balanceReal)}</td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+}"""
+
+    import re
+    # Replace function renderTable() { ... }
+    new_content = re.sub(r'function renderTable\(\) \{.*?\n\}\n', new_render_table + '\n', content, flags=re.DOTALL)
+    
+    with open(ui_charts_path, "w", encoding="utf-8") as f:
+        f.write(new_content)
+        
+    print("Done writing ui_charts.js")
+
+if __name__ == "__main__":
+    run()

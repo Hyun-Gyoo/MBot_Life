@@ -1,4 +1,12 @@
-// --- Excel/CSV Data Exporter ---
+import os
+
+def run():
+    base_dir = r"c:\Users\jackm\MBot_Life"
+    
+    # 1. Update export.js
+    export_js_path = os.path.join(base_dir, "js", "export.js")
+    with open(export_js_path, "w", encoding="utf-8") as f:
+        f.write("""// --- Excel/CSV Data Exporter ---
 
 function generateDetailedLogs(state) {
     const YR = state.simulationPeriod;
@@ -141,9 +149,7 @@ function generateDetailedLogs(state) {
                 type: log.type,
                 name: log.name,
                 amount: log.amount,
-                amountReal: log.amount / inflationFactor,
                 balance: currentBalance,
-                balanceReal: currentBalance / inflationFactor,
                 year: currentYear
             });
         }
@@ -157,9 +163,7 @@ function generateDetailedLogs(state) {
                 type: '투자수익',
                 name: '월간 투자 수익',
                 amount: investmentReturn,
-                amountReal: investmentReturn / inflationFactor,
                 balance: currentBalance,
-                balanceReal: currentBalance / inflationFactor,
                 year: currentYear
             });
         }
@@ -171,16 +175,16 @@ function generateDetailedLogs(state) {
 function exportToCSV() {
     if (simulationResults.length === 0) return;
     
-    let csvContent = "\ufeff"; // UTF-8 BOM
-    csvContent += "발생년월,나이,구분,항목명,금액,평가자산,금액(물가반영),평가자산(물가반영)\n";
+    let csvContent = "\\ufeff"; // UTF-8 BOM
+    csvContent += "발생년월,나이,구분,항목명,금액,평가자산\\n";
     
     const logs = generateDetailedLogs(currentState);
     
     // Add initial investment
-    csvContent += `${currentState.startDate},${Math.floor(Number(currentState.startDate.split('-')[0]) - Number(currentState.birthDate.split('-')[0]))},초기자본,투자원금,${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)}\n`;
+    csvContent += `${currentState.startDate},${Math.floor(Number(currentState.startDate.split('-')[0]) - Number(currentState.birthDate.split('-')[0]))},초기자본,투자원금,${Math.round(currentState.initialInvestment)},${Math.round(currentState.initialInvestment)}\\n`;
     
     for (const log of logs) {
-        csvContent += `${log.date},만 ${log.age}세,${log.type},"${log.name}",${Math.round(log.amountReal)},${Math.round(log.balanceReal)},${Math.round(log.amount)},${Math.round(log.balance)}\n`;
+        csvContent += `${log.date},만 ${log.age}세,${log.type},"${log.name}",${Math.round(log.amount)},${Math.round(log.balance)}\\n`;
     }
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -192,3 +196,9 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
 }
+""")
+        
+    print("Done writing export.js")
+
+if __name__ == "__main__":
+    run()

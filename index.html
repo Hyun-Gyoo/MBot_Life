@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
     <div class="app-container mode-landing" id="app-container">
@@ -214,7 +214,7 @@
                 <header class="dashboard-header" style="margin-bottom: 24px;">
                     <div>
                         <h2 style="font-size: 33px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 12px;">
-                            <input type="text" id="active-scenario-title" onchange="renameActiveScenarioInline(this.value)" style="background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; font-size: 33px; font-weight: 800; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(255,255,255,0.3)'" onblur="this.style.borderColor='transparent'">
+                            <input type="text" id="active-scenario-title" onchange="renameActiveScenarioInline(this.value)" style="width: 100%; min-width: 600px; background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; font-size: 33px; font-weight: 800; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(255,255,255,0.3)'" onblur="this.style.borderColor='transparent'">
                         </h2>
                         <p style="color: var(--text-secondary); font-size: 18px; margin-top: 4px;">좌측 패널에서 입력을 바꾸면 시뮬레이션 결과가 실시간으로 그래프와 표에 동기화됩니다.</p>
                     </div>
@@ -292,24 +292,30 @@
 
                 <!-- Table Section -->
                 <div class="table-card">
-                    <div class="table-header">
-                        <h3>연도별 자산 흐름 세부 명세</h3>
+                    <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>연도별 세부명세</h3>
+                        <style>
+                            #table-year-filter option {
+                                color: #000;
+                                background-color: #fff;
+                            }
+                        </style>
+                        <select id="table-year-filter" onchange="renderTable()" style="padding: 5px 10px; border-radius: 4px; background: var(--bg-surface); color: #fff; border: 1px solid var(--border-color); font-size: 14px;">
+                            <option value="all">전체 연도</option>
+                        </select>
                     </div>
                     <div class="table-container">
                         <table id="simulation-table">
                             <thead>
                                 <tr>
-                                    <th>연도</th>
-                                    <th>나이 (세)</th>
-                                    <th>기초 평가자산</th>
-                                    <th>정기 수입 (월+연)</th>
-                                    <th>정기 지출 (월)</th>
-                                    <th>대출/대여 이자 (지출/수입)</th>
-                                    <th>대출/대여 원금 (유입/상환)</th>
-                                    <th>일회성 흐름</th>
-                                    <th>순현금흐름</th>
-                                    <th>투자 수익 (12%)</th>
-                                    <th>기말 평가자산</th>
+                                    <th>발생년월</th>
+                                    <th>나이</th>
+                                    <th>구분</th>
+                                    <th>항목명</th>
+                                    <th>금액</th>
+                                    <th>평가자산</th>
+                                    <th>금액(물가반영)</th>
+                                    <th>평가자산(물가반영)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -342,15 +348,15 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <!-- App Modules -->
-    <script src="js/state.js?v=11"></script>
-    <script src="js/helpers.js?v=11"></script>
-    <script src="js/ui_timelines.js?v=11"></script>
-    <script src="js/ui_modals.js?v=11"></script>
-    <script src="js/simulation.js?v=11"></script>
-    <script src="js/app_core.js?v=11"></script>
-    <script src="js/ui_charts.js?v=11"></script>
-    <script src="js/export.js?v=11"></script>
-    <script src="js/main.js?v=11"></script>
+    <script src="js/state.js?v=15"></script>
+    <script src="js/helpers.js?v=15"></script>
+    <script src="js/ui_timelines.js?v=15"></script>
+    <script src="js/ui_modals.js?v=15"></script>
+    <script src="js/simulation.js?v=15"></script>
+    <script src="js/app_core.js?v=15"></script>
+    <script src="js/ui_charts.js?v=15"></script>
+    <script src="js/export.js?v=15"></script>
+    <script src="js/main.js?v=15"></script>
 
 </body>
 </html>
