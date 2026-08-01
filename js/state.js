@@ -1,32 +1,56 @@
-// --- Scenarios & Initial State ---
-const DEFAULT_SCENARIO = {
-    initialInvestment: 350000000,
-    annualRate: 15,
-    inflationRate: 3.2,
-    useRealValue: true,
-    simulationPeriod: 20,
-    birthDate: "1970-06",
-    startDate: "2026-07",
+// --- Helper to construct the requested sample scenario ---
+function getSampleScenario() {
+    const today = new Date();
+    const curYear = today.getFullYear();
+    const curMonth = String(today.getMonth() + 1).padStart(2, '0');
+    const startYM = `${curYear}-${curMonth}`;
+    const endYM = `${curYear + 20}-${curMonth}`;
+    const oneYearLaterYM = `${curYear + 1}-${curMonth}`;
     
-    // 실제 보유 자산 점검 이력
-    balanceHistory: [],
-    
-    // 월 정기 수입
-    monthlyIncome: [],
-    
-    // 연 정기 수입 (년단위 적용)
-    annualIncome: [],
-    
-    // 월 정기 지출
-    monthlyExpense: [],
-    
-    // 대출금 설정 (유입, 이자율, 상환)
-    loans: [],
-    
-    // 일회성 현금 흐름
-    onetimeFlow: []
-};
+    return {
+        initialInvestment: 100000000,
+        annualRate: 12,
+        inflationRate: 3.2,
+        useRealValue: true,
+        simulationPeriod: 20,
+        birthDate: "2000-01",
+        startDate: startYM,
+        
+        balanceHistory: [],
+        
+        monthlyIncome: [{
+            id: "inc-sample-1",
+            label: "월 정기 수입",
+            amount: 2000000,
+            start: startYM,
+            end: endYM,
+            applyInflation: true
+        }],
+        
+        annualIncome: [],
+        
+        monthlyExpense: [{
+            id: "exp-sample-1",
+            label: "월 정기 지출",
+            amount: 1500000,
+            start: startYM,
+            end: endYM,
+            applyInflation: true
+        }],
+        
+        loans: [],
+        
+        onetimeFlow: [{
+            id: "ot-sample-1",
+            description: "일본 여행",
+            amount: -3000000,
+            date: oneYearLaterYM,
+            applyInflation: true
+        }]
+    };
+}
 
+const DEFAULT_SCENARIO = getSampleScenario();
 let currentState = JSON.parse(JSON.stringify(DEFAULT_SCENARIO));
 let simulationResults = [];
 let simulationDetailedLogs = [];
