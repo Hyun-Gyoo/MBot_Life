@@ -305,9 +305,13 @@ function renderActiveCashflowChart() {
     };
 
     if (cashflowChart) {
-        cashflowChart.updateOptions(cashflowChartOptions);
-    } else {
-        cashflowChart = new ApexCharts(document.querySelector("#cashflow-chart"), cashflowChartOptions);
+        try { cashflowChart.destroy(); } catch (e) {}
+        cashflowChart = null;
+    }
+    const containerEl = document.querySelector("#cashflow-chart");
+    if (containerEl) {
+        containerEl.innerHTML = "";
+        cashflowChart = new ApexCharts(containerEl, cashflowChartOptions);
         cashflowChart.render();
     }
 }
@@ -458,9 +462,13 @@ function renderComparisonChart(comparisonData) {
     };
 
     if (assetChart) {
-        assetChart.updateOptions(assetChartOptions);
-    } else {
-        assetChart = new ApexCharts(document.querySelector("#assets-chart"), assetChartOptions);
+        try { assetChart.destroy(); } catch (e) {}
+        assetChart = null;
+    }
+    const containerEl = document.querySelector("#assets-chart");
+    if (containerEl) {
+        containerEl.innerHTML = "";
+        assetChart = new ApexCharts(containerEl, assetChartOptions);
         assetChart.render();
     }
 }

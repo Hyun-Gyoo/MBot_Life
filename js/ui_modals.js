@@ -707,10 +707,12 @@ function navigateToStep(stepName) {
         }
         
         runSimulation();
-        setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-            if (typeof renderCharts === 'function') renderCharts();
-        }, 50);
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+                if (typeof renderCharts === 'function') renderCharts();
+            }, 60);
+        });
     }
 }
 
@@ -980,9 +982,13 @@ function renderLandingComparisonChart(comparisonData) {
     };
     
     if (landingChart) {
-        landingChart.updateOptions(opts);
-    } else {
-        landingChart = new ApexCharts(document.querySelector("#landing-comparison-chart"), opts);
+        try { landingChart.destroy(); } catch (e) {}
+        landingChart = null;
+    }
+    const containerEl = document.querySelector("#landing-comparison-chart");
+    if (containerEl) {
+        containerEl.innerHTML = "";
+        landingChart = new ApexCharts(containerEl, opts);
         landingChart.render();
     }
 }
