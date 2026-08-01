@@ -679,20 +679,25 @@ function exitEditModeAndSave() {
 }
 
 function syncStateToInputs() {
-    document.getElementById('initial-investment').value = Number(currentState.initialInvestment).toLocaleString();
-    document.getElementById('annual-rate').value = currentState.annualRate;
-    document.getElementById('inflation-rate').value = currentState.inflationRate;
-    document.getElementById('use-real-value').checked = currentState.useRealValue;
-    document.getElementById('simulation-period').value = currentState.simulationPeriod;
-    document.getElementById('birth-year-month').value = currentState.birthDate;
-    document.getElementById('start-year-month').value = currentState.startDate;
-    document.getElementById('current-date').value = currentState.currentDate || new Date().toISOString().substring(0,7);
-    document.getElementById('current-balance').value = Number(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment).toLocaleString();
+    const initInv = document.getElementById('initial-investment');
+    if (initInv) initInv.value = Number(currentState.initialInvestment || 0).toLocaleString();
+    const annRate = document.getElementById('annual-rate');
+    if (annRate) annRate.value = currentState.annualRate;
+    const infRate = document.getElementById('inflation-rate');
+    if (infRate) infRate.value = currentState.inflationRate;
+    const useReal = document.getElementById('use-real-value');
+    if (useReal) useReal.checked = currentState.useRealValue;
+    const simPeriod = document.getElementById('simulation-period');
+    if (simPeriod) simPeriod.value = currentState.simulationPeriod;
+    const birthDate = document.getElementById('birth-year-month');
+    if (birthDate) birthDate.value = currentState.birthDate;
+    const startDate = document.getElementById('start-year-month');
+    if (startDate) startDate.value = currentState.startDate;
+    const currDate = document.getElementById('current-date');
+    if (currDate) currDate.value = currentState.currentDate || new Date().toISOString().substring(0,7);
+    const currBal = document.getElementById('current-balance');
+    if (currBal) currBal.value = Number(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment).toLocaleString();
 
-    const initKrw = document.getElementById('initial-investment-krw');
-    if (initKrw) initKrw.textContent = formatKRW(currentState.initialInvestment);
-    const currKrw = document.getElementById('current-balance-krw');
-    if (currKrw) currKrw.textContent = formatKRW(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment);
     if (typeof renderBalanceHistory === 'function') renderBalanceHistory();
 }
 
@@ -877,18 +882,24 @@ function renderLandingComparisonChart(comparisonData) {
 
 // Read DOM inputs into state
 function syncInputsToState() {
-    currentState.initialInvestment = Number(document.getElementById('initial-investment').value.replace(/,/g, ''));
-    currentState.annualRate = Number(document.getElementById('annual-rate').value);
-    currentState.inflationRate = Number(document.getElementById('inflation-rate').value);
-    currentState.useRealValue = document.getElementById('use-real-value').checked;
-    currentState.simulationPeriod = Number(document.getElementById('simulation-period').value);
-    currentState.birthDate = document.getElementById('birth-year-month').value;
-    currentState.startDate = document.getElementById('start-year-month').value;
-    currentState.currentDate = document.getElementById('current-date').value;
-    currentState.currentBalance = Number(document.getElementById('current-balance').value.replace(/,/g, ''));
-    
-    document.getElementById('initial-investment-krw').textContent = formatKRW(currentState.initialInvestment);
-    document.getElementById('current-balance-krw').textContent = formatKRW(currentState.currentBalance);
+    const initInv = document.getElementById('initial-investment');
+    if (initInv) currentState.initialInvestment = Number(initInv.value.replace(/,/g, ''));
+    const annRate = document.getElementById('annual-rate');
+    if (annRate) currentState.annualRate = Number(annRate.value);
+    const infRate = document.getElementById('inflation-rate');
+    if (infRate) currentState.inflationRate = Number(infRate.value);
+    const useReal = document.getElementById('use-real-value');
+    if (useReal) currentState.useRealValue = useReal.checked;
+    const simPeriod = document.getElementById('simulation-period');
+    if (simPeriod) currentState.simulationPeriod = Number(simPeriod.value);
+    const birthDate = document.getElementById('birth-year-month');
+    if (birthDate) currentState.birthDate = birthDate.value;
+    const startDate = document.getElementById('start-year-month');
+    if (startDate) currentState.startDate = startDate.value;
+    const currDate = document.getElementById('current-date');
+    if (currDate) currentState.currentDate = currDate.value;
+    const currBal = document.getElementById('current-balance');
+    if (currBal) currentState.currentBalance = Number(currBal.value.replace(/,/g, ''));
 }
 
 function downloadScenario(name) {
