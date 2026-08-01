@@ -766,7 +766,58 @@ function renderLandingComparisonChart(comparisonData) {
         grid: { borderColor: 'rgba(255, 255, 255, 0.05)' },
         tooltip: {
             theme: 'dark',
-            y: { formatter: function(value) { return formatKRW(value); } }
+            custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                const catLabel = w.globals.categoryLabels[dataPointIndex] || (w.config.xaxis.categories ? w.config.xaxis.categories[dataPointIndex] : '') || '';
+                const yrStr = catLabel.split('년')[0];
+                const targetYear = parseInt(yrStr, 10);
+                
+                let html = `<div style="padding: 12px; font-size: 13px; color: #fff; line-height: 1.5;">`;
+                html += `<div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 4px; color: #e2e8f0;">📅 ${catLabel}</div>`;
+                
+                if (w.globals.seriesNames && w.globals.seriesNames.length > 0) {
+                    w.globals.seriesNames.forEach((sName, sIdx) => {
+                        const color = w.globals.colors[sIdx] || '#6366f1';
+                        const val = series[sIdx] ? series[sIdx][dataPointIndex] : 0;
+                        html += `<div style="margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">`;
+                        html += `<span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${color}; margin-right:6px;"></span><strong>${sName}</strong></span>`;
+                        html += `<span style="font-weight:bold; color:#f8fafc;">${formatKRW(val)}</span>`;
+                        html += `</div>`;
+                    });
+                }
+                
+                let allMajorLogs = [];
+                if (!isNaN(targetYear) && typeof generateDetailedLogs === 'function') {
+                    comparisonData.forEach(cd => {
+                        const sState = cd.state || currentState;
+                        const logs = generateDetailedLogs(sState);
+                        logs.forEach(l => {
+                            if (l.year === targetYear && (l.type === '대출/대여' || l.type === '일회성') && Math.abs(l.amount) >= 100000000) {
+                                allMajorLogs.push({
+                                    scenarioName: cd.name,
+                                    name: l.name,
+                                    amount: l.amount,
+                                    type: l.type
+                                });
+                            }
+                        });
+                    });
+                }
+                
+                if (allMajorLogs.length > 0) {
+                    html += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 12px;">`;
+                    html += `<div style="font-weight: bold; color: #f59e0b; margin-bottom: 4px;">📌 주요 현금흐름 (1억 이상):</div>`;
+                    allMajorLogs.forEach(l => {
+                        const sign = l.amount > 0 ? '+' : '-';
+                        const color = l.amount > 0 ? '#34d399' : '#f87171';
+                        const prefix = comparisonData.length > 1 ? `[${l.scenarioName}] ` : '';
+                        html += `<div style="margin-bottom: 2px;">• ${prefix}${l.name}: <span style="color:${color}; font-weight:bold;">${sign}${formatKRW(Math.abs(l.amount))}</span></div>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                html += `</div>`;
+                return html;
+            }
         }
     };
     
