@@ -644,21 +644,107 @@ function renameActiveScenarioInline(newName) {
     activeScenarioName = newName;
 }
 
+let currentStep = 'list'; // 'list' | 'inputs' | 'results'
+
+function navigateToStep(stepName) {
+    const container = document.getElementById('app-container');
+    if (!container) return;
+    
+    currentStep = stepName;
+    
+    // Clear all step and mode classes
+    container.classList.remove('step-list', 'step-inputs', 'step-results', 'mode-landing', 'mode-editor', 'mobile-show-inputs', 'mobile-show-results');
+    
+    const prevBtn = document.getElementById('btn-step-prev');
+    const nextBtn = document.getElementById('btn-step-next');
+    const numBadge = document.getElementById('step-nav-number');
+    const titleText = document.getElementById('step-nav-title');
+    
+    if (stepName === 'list') {
+        saveLandingState();
+        container.classList.add('step-list', 'mode-landing');
+        if (numBadge) numBadge.textContent = '1 / 3 단계';
+        if (titleText) titleText.textContent = '시나리오 목록';
+        
+        if (prevBtn) {
+            prevBtn.disabled = true;
+            prevBtn.innerHTML = '◀ 이전';
+        }
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = '다음 (설정&입력) ▶';
+        }
+        
+        renderLandingView();
+    } else if (stepName === 'inputs') {
+        container.classList.add('step-inputs', 'mode-editor', 'mobile-show-inputs');
+        if (numBadge) numBadge.textContent = '2 / 3 단계';
+        if (titleText) titleText.textContent = `설정 & 입력 (${activeScenarioName || '시나리오'})`;
+        
+        if (prevBtn) {
+            prevBtn.disabled = false;
+            prevBtn.innerHTML = '◀ 이전 (목록)';
+        }
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = '다음 (결과 그래프) ▶';
+        }
+        
+        runSimulation();
+        renderAllTimelines();
+    } else if (stepName === 'results') {
+        container.classList.add('step-results', 'mode-editor', 'mobile-show-results');
+        if (numBadge) numBadge.textContent = '3 / 3 단계';
+        if (titleText) titleText.textContent = `결과 그래프 & 명세 (${activeScenarioName || '시나리오'})`;
+        
+        if (prevBtn) {
+            prevBtn.disabled = false;
+            prevBtn.innerHTML = '◀ 이전 (설정&입력)';
+        }
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = '목록으로 ◀◀';
+        }
+        
+        runSimulation();
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+            if (typeof renderCharts === 'function') renderCharts();
+        }, 50);
+    }
+}
+
+function navigateToPrevStep() {
+    if (currentStep === 'results') {
+        navigateToStep('inputs');
+    } else if (currentStep === 'inputs') {
+        navigateToStep('list');
+    }
+}
+
+function navigateToNextStep() {
+    if (currentStep === 'list') {
+        if (!activeScenarioName) {
+            let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
+            const keys = Object.keys(presets);
+            if (keys.length > 0) {
+                enterEditMode(keys[0]);
+                return;
+            }
+        }
+        navigateToStep('inputs');
+    } else if (currentStep === 'inputs') {
+        navigateToStep('results');
+    } else if (currentStep === 'results') {
+        navigateToStep('list');
+    }
+}
+
 function enterEditMode(name) {
     activeScenarioName = name;
     let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
     if (!presets[name]) return;
     currentState = JSON.parse(JSON.stringify(presets[name]));
-    
-    const container = document.getElementById('app-container');
-    if (container) {
-        container.classList.remove('mode-landing');
-        container.classList.add('mode-editor');
-    }
-    
-    if (typeof switchMobileTab === 'function') {
-        switchMobileTab('results');
-    }
     
     const scenarioTitle = document.getElementById('active-scenario-title');
     if (scenarioTitle) {
@@ -666,20 +752,11 @@ function enterEditMode(name) {
     }
     
     syncStateToInputs();
-    runSimulation();
-    renderAllTimelines();
+    navigateToStep('inputs');
 }
 
 function exitEditModeAndSave() {
-    saveLandingState();
-    activeScenarioName = null;
-    
-    const container = document.getElementById('app-container');
-    if (container) {
-        container.classList.remove('mode-editor', 'mobile-show-inputs', 'mobile-show-results');
-        container.classList.add('mode-landing');
-    }
-    renderLandingView();
+    navigateToStep('list');
 }
 
 function syncStateToInputs() {

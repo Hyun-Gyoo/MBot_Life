@@ -989,55 +989,135 @@ table tbody tr:nth-child(even) {
         overflow-x: hidden;
     }
     
-    /* Mobile Nav Bar - ONLY display in editor mode */
-    .app-container.mode-landing .mobile-nav-bar {
-        display: none !important;
-    }
-    .app-container.mode-editor .mobile-nav-bar {
-        display: grid !important;
+/* Step Navigation Header Bar */
+.step-nav-bar {
+    width: 100%;
+    background: rgba(11, 15, 25, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+}
+
+.step-nav-btn {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+    font-family: var(--font-outfit), sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 42px;
+}
+
+.step-nav-btn:hover:not(:disabled) {
+    background: var(--color-indigo);
+    color: #ffffff;
+    border-color: var(--color-indigo);
+}
+
+.step-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    border-color: transparent;
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.step-nav-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-badge {
+    background: var(--color-indigo-glow);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: var(--color-indigo);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.step-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* 3-Step Navigation Display Rules (Global) */
+/* Step 1: 시나리오 목록 */
+.app-container.step-list .sidebar {
+    display: none !important;
+}
+.app-container.step-list .main-content-active-scenario {
+    display: none !important;
+}
+.app-container.step-list .main-content-landing {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Step 2: 설정 & 입력 */
+.app-container.step-inputs .main-content-landing {
+    display: none !important;
+}
+.app-container.step-inputs .main-content-active-scenario {
+    display: none !important;
+}
+.app-container.step-inputs .sidebar {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 650px;
+    margin: 0 auto;
+    border-right: none !important;
+    position: static !important;
+    height: auto !important;
+    min-height: calc(100vh - 60px);
+}
+
+/* Step 3: 결과 그래프 & 명세 */
+.app-container.step-results .sidebar {
+    display: none !important;
+}
+.app-container.step-results .main-content-landing {
+    display: none !important;
+}
+.app-container.step-results .main-content-active-scenario {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Tablet & Mobile Layout Adaptations (<= 1023px) */
+@media (max-width: 1023px) {
+    .step-nav-bar {
+        padding: 8px 12px;
     }
     
-    /* 1. LANDING MODE (MBot 라이프 플래너 - 시나리오 관리/비교 페이지) */
-    .app-container.mode-landing .sidebar {
-        display: none !important;
-    }
-    .app-container.mode-landing .main-content-active-scenario {
-        display: none !important;
-    }
-    .app-container.mode-landing .main-content-landing {
-        display: block !important;
-        width: 100% !important;
+    .step-title {
+        font-size: 14px;
     }
     
-    /* 2. EDITOR MODE (개별 시나리오 편집 & 상세 분석 페이지) */
-    .app-container.mode-editor .main-content-landing {
-        display: none !important;
+    .step-nav-btn {
+        font-size: 13px;
+        padding: 6px 10px;
+        min-height: 38px;
     }
     
-    .app-container.mode-editor.mobile-show-inputs .sidebar {
-        display: flex !important;
-        width: 100% !important;
+    .app-container.step-inputs .sidebar {
+        max-width: 100% !important;
+        padding: 0 !important;
     }
-    .app-container.mode-editor.mobile-show-inputs .main-content-active-scenario {
-        display: none !important;
-    }
-    
-    .app-container.mode-editor.mobile-show-results .sidebar {
-        display: none !important;
-    }
-    .app-container.mode-editor.mobile-show-results .main-content-active-scenario {
-        display: block !important;
-        width: 100% !important;
-    }
-    
-    /* Default fallback for editor mode when no mobile tab toggle class is set */
-    .app-container.mode-editor:not(.mobile-show-inputs):not(.mobile-show-results) .sidebar {
-        display: none !important;
-    }
-    .app-container.mode-editor:not(.mobile-show-inputs):not(.mobile-show-results) .main-content-active-scenario {
-        display: block !important;
-        width: 100% !important;
-    }
+}
     
     /* Metrics Summary Cards Grid for Tablet/Mobile */
     .metrics-grid {
