@@ -114,6 +114,83 @@ function renderActiveCashflowChart() {
     const totalInflowData = simulationResults.map(yr => Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow));
     const totalOutflowData = simulationResults.map(yr => Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow));
     
+    // Generate point annotations for major loan/lend and one-time flows (>= 1억 원)
+    const pointsAnnotations = [];
+    if (typeof generateDetailedLogs === 'function') {
+        const logs = generateDetailedLogs(currentState);
+        const majorLogsByYear = {};
+        logs.forEach(l => {
+            if ((l.type === '대출/대여' || l.type === '일회성') && Math.abs(l.amount) >= 100000000) {
+                if (!majorLogsByYear[l.year]) majorLogsByYear[l.year] = [];
+                majorLogsByYear[l.year].push(l);
+            }
+        });
+        
+        simulationResults.forEach(yr => {
+            const yrLogs = majorLogsByYear[yr.year];
+            if (yrLogs && yrLogs.length > 0) {
+                const inflows = yrLogs.filter(l => l.amount > 0);
+                const outflows = yrLogs.filter(l => l.amount < 0);
+                
+                if (inflows.length > 0) {
+                    const labelText = inflows.map(l => `${l.name} (+${formatKRW(l.amount)})`).join('\n');
+                    const totalInflow = Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow);
+                    pointsAnnotations.push({
+                        x: `${yr.year}년`,
+                        y: totalInflow,
+                        seriesIndex: 0,
+                        marker: {
+                            size: 5,
+                            fillColor: '#10b981',
+                            strokeColor: '#ffffff',
+                            strokeWidth: 2
+                        },
+                        label: {
+                            borderColor: '#10b981',
+                            offsetY: -5,
+                            style: {
+                                color: '#ffffff',
+                                background: '#059669',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                padding: { left: 6, right: 6, top: 4, bottom: 4 }
+                            },
+                            text: labelText
+                        }
+                    });
+                }
+                
+                if (outflows.length > 0) {
+                    const labelText = outflows.map(l => `${l.name} (-${formatKRW(Math.abs(l.amount))})`).join('\n');
+                    const totalOutflow = Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow);
+                    pointsAnnotations.push({
+                        x: `${yr.year}년`,
+                        y: totalOutflow,
+                        seriesIndex: 1,
+                        marker: {
+                            size: 5,
+                            fillColor: '#f43f5e',
+                            strokeColor: '#ffffff',
+                            strokeWidth: 2
+                        },
+                        label: {
+                            borderColor: '#f43f5e',
+                            offsetY: -5,
+                            style: {
+                                color: '#ffffff',
+                                background: '#e11d48',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                padding: { left: 6, right: 6, top: 4, bottom: 4 }
+                            },
+                            text: labelText
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     const cashflowChartOptions = {
         series: [{
             name: '총 유입액',
@@ -136,6 +213,9 @@ function renderActiveCashflowChart() {
                 columnWidth: '55%',
                 endingShape: 'rounded'
             },
+        },
+        annotations: {
+            points: pointsAnnotations
         },
         dataLabels: { enabled: false },
         stroke: {
@@ -165,10 +245,30 @@ function renderActiveCashflowChart() {
         },
         tooltip: {
             theme: 'dark',
-            y: {
-                formatter: function (value) {
-                    return formatKRW(value);
+            custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                const yrObj = simulationResults[dataPointIndex];
+                const year = yrObj ? yrObj.year : null;
+                const val = series[seriesIndex][dataPointIndex];
+                const seriesName = w.globals.seriesNames[seriesIndex];
+                const color = w.globals.colors[seriesIndex];
+                
+                let html = `<div style="padding: 10px; font-size: 13px; color: #fff;">`;
+                html += `<div style="font-weight: bold; margin-bottom: 6px;">${year}년 - <span style="color:${color};">${seriesName}</span>: ${formatKRW(val)}</div>`;
+                
+                if (year && typeof generateDetailedLogs === 'function') {
+                    const logs = generateDetailedLogs(currentState).filter(l => l.year === year && (l.type === '대출/대여' || l.type === '일회성') && Math.abs(l.amount) >= 100000000);
+                    if (logs.length > 0) {
+                        html += `<div style="font-size: 11px; color: #a5b4fc; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; margin-top: 4px;">`;
+                        html += `<div style="font-weight: bold; margin-bottom: 4px;">📌 주요 대출/대여 및 일회성 (1억 이상):</div>`;
+                        logs.forEach(l => {
+                            const sign = l.amount > 0 ? '+' : '-';
+                            html += `<div>• ${l.name}: ${sign}${formatKRW(Math.abs(l.amount))}</div>`;
+                        });
+                        html += `</div>`;
+                    }
                 }
+                html += `</div>`;
+                return html;
             }
         }
     };
