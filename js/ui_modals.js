@@ -901,8 +901,9 @@ function renderLandingComparisonChart(comparisonData) {
             labels: {
                 rotate: -90,
                 rotateAlways: true,
+                maxHeight: 70,
                 style: {
-                    fontSize: '12px',
+                    fontSize: '11px',
                     colors: '#9ca3af'
                 }
             }
@@ -915,10 +916,10 @@ function renderLandingComparisonChart(comparisonData) {
         grid: { 
             borderColor: 'rgba(255, 255, 255, 0.05)',
             padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0
+                left: 10,
+                right: 15,
+                top: 10,
+                bottom: 10
             }
         },
         tooltip: {

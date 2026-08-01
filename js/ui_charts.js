@@ -235,8 +235,9 @@ function renderActiveCashflowChart() {
             labels: {
                 rotate: -90,
                 rotateAlways: true,
+                maxHeight: 70,
                 style: {
-                    fontSize: '12px',
+                    fontSize: '11px',
                     colors: '#9ca3af'
                 }
             },
@@ -253,10 +254,10 @@ function renderActiveCashflowChart() {
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.05)',
             padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0
+                left: 10,
+                right: 15,
+                top: 10,
+                bottom: 10
             },
             yaxis: { lines: { show: true } }
         },
@@ -368,8 +369,9 @@ function renderComparisonChart(comparisonData) {
             labels: {
                 rotate: -90,
                 rotateAlways: true,
+                maxHeight: 70,
                 style: {
-                    fontSize: '12px',
+                    fontSize: '11px',
                     colors: '#9ca3af'
                 }
             },
@@ -386,10 +388,10 @@ function renderComparisonChart(comparisonData) {
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.05)',
             padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0
+                left: 10,
+                right: 15,
+                top: 10,
+                bottom: 10
             },
             yaxis: { lines: { show: true } },
             xaxis: { lines: { show: false } }
@@ -461,4 +463,15 @@ function renderComparisonChart(comparisonData) {
         assetChart = new ApexCharts(document.querySelector("#assets-chart"), assetChartOptions);
         assetChart.render();
     }
+}
+
+function renderCharts() {
+    renderActiveCashflowChart();
+    const sim = simulateScenario(currentState);
+    renderComparisonChart([{
+        name: activeScenarioName || "현재 플랜",
+        results: simulationResults.length > 0 ? simulationResults : sim.annualResults,
+        metrics: sim.metrics,
+        state: currentState
+    }]);
 }
