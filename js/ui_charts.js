@@ -141,7 +141,7 @@ function renderActiveCashflowChart() {
                     const labelText = inflows.map(l => `${l.name} (+${formatKRW(l.amount)})`);
                     const totalInflow = Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow + (yr.investmentReturn || 0));
                     pointsAnnotations.push({
-                        x: `${yr.year}년`,
+                        x: `${String(yr.year).replace(/^20/, '')}년`,
                         y: totalInflow,
                         seriesIndex: 0,
                         marker: {
@@ -169,7 +169,7 @@ function renderActiveCashflowChart() {
                     const labelText = outflows.map(l => `${l.name} (-${formatKRW(Math.abs(l.amount))})`);
                     const totalOutflow = Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow);
                     pointsAnnotations.push({
-                        x: `${yr.year}년`,
+                        x: `${String(yr.year).replace(/^20/, '')}년`,
                         y: totalOutflow,
                         seriesIndex: 1,
                         marker: {
@@ -209,7 +209,9 @@ function renderActiveCashflowChart() {
             height: 350,
             foreColor: '#9ca3af',
             background: 'transparent',
-            toolbar: { show: false }
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            selection: { enabled: false }
         },
         colors: ['#10b981', '#f43f5e'],
         plotOptions: {
@@ -229,7 +231,7 @@ function renderActiveCashflowChart() {
             colors: ['transparent']
         },
         xaxis: {
-            categories: simulationResults.map(yr => `${yr.year}년`),
+            categories: simulationResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`),
             axisBorder: { show: false },
             axisTicks: { show: false }
         },
@@ -312,7 +314,7 @@ function renderComparisonChart(comparisonData) {
         }
     });
     
-    const yearsLabels = longestResults.map(yr => `${yr.year}년 (만 ${yr.endAge}세)`);
+    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`);
     
     // Construct series data
     const series = comparisonData.map(cd => {
@@ -338,7 +340,8 @@ function renderComparisonChart(comparisonData) {
             foreColor: '#9ca3af',
             background: 'transparent',
             toolbar: { show: false },
-            zoom: { enabled: false }
+            zoom: { enabled: false },
+            selection: { enabled: false }
         },
         colors: ['#6366f1', '#10b981', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4'],
         dataLabels: { enabled: false },

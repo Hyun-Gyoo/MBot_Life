@@ -868,7 +868,7 @@ function renderLandingComparisonChart(comparisonData) {
         }
     });
     
-    const yearsLabels = longestResults.map(yr => `${yr.year}년 (만 ${yr.endAge}세)`);
+    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`);
     const series = comparisonData.map(cd => {
         return {
             name: cd.name,
@@ -878,7 +878,15 @@ function renderLandingComparisonChart(comparisonData) {
     
     const opts = {
         series: series,
-        chart: { type: 'line', height: 400, foreColor: '#9ca3af', background: 'transparent', toolbar: { show: false } },
+        chart: { 
+            type: 'line', 
+            height: 400, 
+            foreColor: '#9ca3af', 
+            background: 'transparent', 
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            selection: { enabled: false }
+        },
         colors: ['#6366f1', '#10b981', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4'],
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
