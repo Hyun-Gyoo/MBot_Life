@@ -116,7 +116,7 @@ function renderTable() {
 
 // Renders inflow vs outflow bar chart for currently edited scenario
 function renderActiveCashflowChart() {
-    const totalInflowData = simulationResults.map(yr => Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow));
+    const totalInflowData = simulationResults.map(yr => Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow + (yr.investmentReturn || 0)));
     const totalOutflowData = simulationResults.map(yr => Math.round(yr.regMonthlyExpense + yr.loanInterest + yr.loanRepayment + yr.onetimeOutflow));
     
     // Generate point annotations for major loan/lend and one-time flows (>= 1억 원)
@@ -139,7 +139,7 @@ function renderActiveCashflowChart() {
                 
                 if (inflows.length > 0) {
                     const labelText = inflows.map(l => `${l.name} (+${formatKRW(l.amount)})`);
-                    const totalInflow = Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow);
+                    const totalInflow = Math.round(yr.regMonthlyIncome + yr.regAnnualIncome + yr.loanInflow + yr.onetimeInflow + (yr.investmentReturn || 0));
                     pointsAnnotations.push({
                         x: `${yr.year}년`,
                         y: totalInflow,
@@ -198,7 +198,7 @@ function renderActiveCashflowChart() {
 
     const cashflowChartOptions = {
         series: [{
-            name: '총 유입액',
+            name: '총 유입액(수입+투자수익)',
             data: totalInflowData
         }, {
             name: '총 유출액',
@@ -259,6 +259,15 @@ function renderActiveCashflowChart() {
                 
                 let html = `<div style="padding: 10px; font-size: 13px; color: #fff;">`;
                 html += `<div style="font-weight: bold; margin-bottom: 6px;">${year}년 - <span style="color:${color};">${seriesName}</span>: ${formatKRW(val)}</div>`;
+                
+                if (yrObj && seriesIndex === 0) {
+                    const cashIn = Math.round(yrObj.regMonthlyIncome + yrObj.regAnnualIncome + yrObj.loanInflow + yrObj.onetimeInflow);
+                    const retIn = Math.round(yrObj.investmentReturn || 0);
+                    html += `<div style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">`;
+                    html += `• 현금 수입: ${formatKRW(cashIn)}<br>`;
+                    html += `• 투자 수익 (복리): <span style="color:#34d399; font-weight:bold;">+${formatKRW(retIn)}</span>`;
+                    html += `</div>`;
+                }
                 
                 if (year && typeof generateDetailedLogs === 'function') {
                     const logs = generateDetailedLogs(currentState).filter(l => l.year === year && (l.type === '대출/대여' || l.type === '일회성') && Math.abs(l.amount) >= 100000000);
