@@ -8,8 +8,34 @@ function switchTab(tabId) {
     });
     
     // Find the button and trigger active
-    event.currentTarget.classList.add('active');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+    const target = document.getElementById(`tab-${tabId}`);
+    if (target) target.classList.add('active');
+}
+
+function switchMobileTab(mode) {
+    const container = document.getElementById('app-container');
+    const btnInputs = document.getElementById('btn-view-inputs');
+    const btnResults = document.getElementById('btn-view-results');
+    
+    if (!container) return;
+    
+    container.classList.remove('mobile-show-inputs', 'mobile-show-results');
+    if (btnInputs) btnInputs.classList.remove('active');
+    if (btnResults) btnResults.classList.remove('active');
+    
+    if (mode === 'inputs') {
+        container.classList.add('mobile-show-inputs');
+        if (btnInputs) btnInputs.classList.add('active');
+    } else {
+        container.classList.add('mobile-show-results');
+        if (btnResults) btnResults.classList.add('active');
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 100);
+    }
 }
 
 // --- Render Timeline Lists ---

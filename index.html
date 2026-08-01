@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <div class="app-container mode-landing" id="app-container">
@@ -150,8 +150,14 @@
             </div>
         </aside>
 
-        <!-- Main Dashboard Content -->
+        <!-- Main Content Area: Charts & Output -->
         <main class="main-content">
+            <!-- Mobile Navigation Bar -->
+            <div class="mobile-nav-bar">
+                <button id="btn-view-inputs" class="mobile-nav-btn" onclick="switchMobileTab('inputs')">⚙️ 설정 & 입력</button>
+                <button id="btn-view-results" class="mobile-nav-btn active" onclick="switchMobileTab('results')">📊 결과 그래프 & 명세</button>
+            </div>
+
             <!-- 1. LANDING VIEW: Scenario Management Dashboard -->
             <div class="main-content-landing" id="main-content-landing">
                 <header class="dashboard-header" style="margin-bottom: 24px;">
@@ -355,15 +361,15 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <!-- App Modules -->
-    <script src="js/state.js?v=26"></script>
-    <script src="js/helpers.js?v=26"></script>
-    <script src="js/ui_timelines.js?v=26"></script>
-    <script src="js/ui_modals.js?v=26"></script>
-    <script src="js/simulation.js?v=26"></script>
-    <script src="js/app_core.js?v=26"></script>
-    <script src="js/ui_charts.js?v=26"></script>
-    <script src="js/export.js?v=26"></script>
-    <script src="js/main.js?v=26"></script>
+    <script src="js/state.js?v=27"></script>
+    <script src="js/helpers.js?v=27"></script>
+    <script src="js/ui_timelines.js?v=27"></script>
+    <script src="js/ui_modals.js?v=27"></script>
+    <script src="js/simulation.js?v=27"></script>
+    <script src="js/app_core.js?v=27"></script>
+    <script src="js/ui_charts.js?v=27"></script>
+    <script src="js/export.js?v=27"></script>
+    <script src="js/main.js?v=27"></script>
 
 </body>
 </html>
