@@ -117,9 +117,14 @@ function renderLoans() {
         const isLend = item.type === 'lend';
         const badgeColor = isLend ? 'background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #a7f3d0;' : '';
         
+        const isDeferred = !!item.isDeferredInterest;
+        const defType = item.deferredInterestType || 'simple';
+        const deferredTag = isDeferred ? `<span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3);">후지급 (${defType === 'compound' ? '복리' : '단리'})</span>` : `<span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); color: var(--text-muted);">매월지급</span>`;
+
         div.innerHTML = `
-            <div style="margin-bottom: 8px;">
-                <input type="text" value="${item.name || ''}" placeholder="설명 (이름)" onchange="updateLoan(${index}, 'name', this.value); runSimulation();" style="width: 100%; text-align: left; font-size: 15px; font-weight: bold; height: 38px; box-sizing: border-box;">
+            <div style="margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <input type="text" value="${item.name || ''}" placeholder="설명 (이름)" onchange="updateLoan(${index}, 'name', this.value); runSimulation();" style="flex: 1; text-align: left; font-size: 15px; font-weight: bold; height: 38px; box-sizing: border-box;">
+                ${deferredTag}
             </div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                 <input type="month" value="${item.borrowDate}" onchange="updateLoan(${index}, 'borrowDate', this.value); runSimulation();" style="flex: 1; height: 38px; box-sizing: border-box;">
@@ -212,7 +217,7 @@ function deleteMonthlyExpense(index) {
 
 function updateLoan(index, key, val) {
     if (key === 'amount' || key === 'rate') val = Number(String(val).replace(/,/g, ''));
-    if (key === 'applyInflation') val = val === true;
+    if (key === 'applyInflation' || key === 'isDeferredInterest') val = val === true;
     currentState.loans[index][key] = val;
 }
 

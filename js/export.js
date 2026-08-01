@@ -103,13 +103,37 @@ function generateDetailedLogs(state) {
             const factor = loan.applyInflation ? inflationFactor : 1;
             const isLend = loan.type === 'lend';
             const principal = loan.amount * factor;
+            const isDeferred = !!loan.isDeferredInterest;
+            const deferredType = loan.deferredInterestType || 'simple';
             
-            if (currentYM > loan.borrowDate && currentYM <= loan.repayDate) {
-                const interestAmount = principal * (loan.rate / 100) / 12;
-                if (isLend) {
-                    monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대여') + ' 이자 수입', amount: interestAmount });
-                } else {
-                    monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대출') + ' 이자 지출', amount: -interestAmount });
+            if (isDeferred) {
+                if (currentYM === loan.repayDate) {
+                    const durationMonths = Math.max(0, diffMonths(loan.borrowDate, loan.repayDate));
+                    if (durationMonths > 0) {
+                        const monthlyRate = (loan.rate / 100) / 12;
+                        let totalInterest = 0;
+                        if (deferredType === 'compound') {
+                            totalInterest = principal * (Math.pow(1 + monthlyRate, durationMonths) - 1);
+                        } else {
+                            totalInterest = principal * monthlyRate * durationMonths;
+                        }
+                        
+                        const defLabel = deferredType === 'compound' ? '후지급-복리' : '후지급-단리';
+                        if (isLend) {
+                            monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대여') + ` 이자 수입 (${defLabel})`, amount: totalInterest });
+                        } else {
+                            monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대출') + ` 이자 지출 (${defLabel})`, amount: -totalInterest });
+                        }
+                    }
+                }
+            } else {
+                if (currentYM > loan.borrowDate && currentYM <= loan.repayDate) {
+                    const interestAmount = principal * (loan.rate / 100) / 12;
+                    if (isLend) {
+                        monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대여') + ' 이자 수입', amount: interestAmount });
+                    } else {
+                        monthlyLogs.push({ date: currentYM, age: exactAge, type: '대출/대여', name: (loan.name || '대출') + ' 이자 지출', amount: -interestAmount });
+                    }
                 }
             }
             

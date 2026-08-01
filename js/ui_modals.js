@@ -13,6 +13,14 @@ function getAgeAt(dateStr) {
     return `<span style="margin-left: 8px; font-size: 13px; font-weight: bold; color: var(--color-emerald);">만 ${age}세</span>`;
 }
 
+window.toggleLoanDeferredOptions = function() {
+    const chk = document.getElementById('modal-loan-is-deferred');
+    const container = document.getElementById('modal-loan-deferred-container');
+    if (chk && container) {
+        container.style.display = chk.checked ? 'block' : 'none';
+    }
+};
+
 window.updateModalAIPreview = function() {
     const startEl = document.getElementById('modal-ai-start');
     const endEl = document.getElementById('modal-ai-end');
@@ -306,6 +314,23 @@ function openAddItemModal(type, editIndex = null) {
                 <input type="checkbox" id="modal-loan-apply-inflation" style="width:16px; height:16px;" ${item && item.applyInflation ? 'checked' : ''}>
                 <label for="modal-loan-apply-inflation" style="margin-bottom:0;">물가상승률 반영 (실질 가치 고정)</label>
             </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:12px;">
+                <input type="checkbox" id="modal-loan-is-deferred" style="width:16px; height:16px;" ${item && item.isDeferredInterest ? 'checked' : ''} onchange="window.toggleLoanDeferredOptions()">
+                <label for="modal-loan-is-deferred" style="margin-bottom:0; font-weight:600;">이자 후지급 (만기 시 일시 지급/수입)</label>
+            </div>
+            <div id="modal-loan-deferred-container" style="display:${item && item.isDeferredInterest ? 'block' : 'none'}; margin-top:10px; padding:12px; background:rgba(255,255,255,0.05); border-radius:6px; border:1px solid var(--border-color);">
+                <label style="font-size:13px; font-weight:bold; color:var(--text-secondary); margin-bottom:8px; display:block;">후지급 이자 계산 방식</label>
+                <div style="display:flex; gap:16px;">
+                    <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
+                        <input type="radio" name="modal-loan-deferred-type" value="simple" ${!item || item.deferredInterestType !== 'compound' ? 'checked' : ''}>
+                        <span>단리 (원금 기준)</span>
+                    </label>
+                    <label style="display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer;">
+                        <input type="radio" name="modal-loan-deferred-type" value="compound" ${item && item.deferredInterestType === 'compound' ? 'checked' : ''}>
+                        <span>복리 (이자에 이자 부과)</span>
+                    </label>
+                </div>
+            </div>
             <div id="modal-loan-inflated-preview" style="font-size:13px; margin-top:12px;"></div>
         `;
         submitBtn.onclick = () => submitModalItem(type);
@@ -405,10 +430,22 @@ function submitModalItem(type) {
         const ltype = document.getElementById('modal-loan-type').value;
         if (!borrowDate || !repayDate || isNaN(amount) || isNaN(rate)) return alert('필수 항목을 입력하세요.');
         
+        const isDeferredInterest = document.getElementById('modal-loan-is-deferred').checked;
+        let deferredInterestType = 'simple';
+        const typeRadios = document.getElementsByName('modal-loan-deferred-type');
+        for (const r of typeRadios) {
+            if (r.checked) {
+                deferredInterestType = r.value;
+                break;
+            }
+        }
+        
         const data = {
             id: isEdit ? currentState.loans[currentEditIndex].id : "loan-" + Date.now(), 
             type: ltype, name, amount, rate, borrowDate, repayDate,
-            applyInflation: document.getElementById('modal-loan-apply-inflation').checked
+            applyInflation: document.getElementById('modal-loan-apply-inflation').checked,
+            isDeferredInterest,
+            deferredInterestType
         };
         
         if (isEdit) currentState.loans[currentEditIndex] = data;

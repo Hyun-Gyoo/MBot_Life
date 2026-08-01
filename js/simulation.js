@@ -119,14 +119,38 @@ function simulateScenario(state) {
             const factor = loan.applyInflation ? inflationFactor : 1;
             const isLend = loan.type === 'lend';
             const principal = loan.amount * factor;
+            const isDeferred = !!loan.isDeferredInterest;
+            const deferredType = loan.deferredInterestType || 'simple';
             
-            // Interest condition: active while borrowed/lent (exclusive of borrow date, inclusive of repay date)
-            if (currentYM > loan.borrowDate && currentYM <= loan.repayDate) {
-                const interestAmount = principal * (loan.rate / 100) / 12;
-                if (isLend) {
-                    loanInterest -= interestAmount; // 대여 이자: 유입이므로 이자지출에서 차감 (음수 지출)
-                } else {
-                    loanInterest += interestAmount; // 대출 이자: 지출로 가산
+            if (isDeferred) {
+                // 후지급 방식: 매월 현금 흐름 발생 안 함, 만기월(repayDate)에 총 이자 일시 반영
+                if (currentYM === loan.repayDate) {
+                    const durationMonths = Math.max(0, diffMonths(loan.borrowDate, loan.repayDate));
+                    if (durationMonths > 0) {
+                        const monthlyRate = (loan.rate / 100) / 12;
+                        let totalInterest = 0;
+                        if (deferredType === 'compound') {
+                            totalInterest = principal * (Math.pow(1 + monthlyRate, durationMonths) - 1);
+                        } else {
+                            totalInterest = principal * monthlyRate * durationMonths;
+                        }
+                        
+                        if (isLend) {
+                            loanInterest -= totalInterest; // 대여 이자 후지급 수입
+                        } else {
+                            loanInterest += totalInterest; // 대출 이자 후지급 지출
+                        }
+                    }
+                }
+            } else {
+                // 기존 매월 지급 방식
+                if (currentYM > loan.borrowDate && currentYM <= loan.repayDate) {
+                    const interestAmount = principal * (loan.rate / 100) / 12;
+                    if (isLend) {
+                        loanInterest -= interestAmount; // 대여 이자: 유입이므로 이자지출에서 차감 (음수 지출)
+                    } else {
+                        loanInterest += interestAmount; // 대출 이자: 지출로 가산
+                    }
                 }
             }
             
