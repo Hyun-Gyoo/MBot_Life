@@ -660,24 +660,17 @@ function navigateToStep(stepName) {
     const numBadge = document.getElementById('step-nav-number');
     const titleText = document.getElementById('step-nav-title');
     
+    const stepNavBar = document.getElementById('step-nav-bar');
+    
     if (stepName === 'list') {
         saveLandingState();
         container.classList.add('step-list', 'mode-landing');
-        if (numBadge) numBadge.textContent = '1 / 3 단계';
-        if (titleText) titleText.textContent = '시나리오 목록';
-        
-        if (prevBtn) {
-            prevBtn.disabled = true;
-            prevBtn.innerHTML = '◀ 이전';
-        }
-        if (nextBtn) {
-            nextBtn.disabled = false;
-            nextBtn.innerHTML = '다음 (설정&입력) ▶';
-        }
+        if (stepNavBar) stepNavBar.style.display = 'none';
         
         renderLandingView();
     } else if (stepName === 'inputs') {
         container.classList.add('step-inputs', 'mode-editor', 'mobile-show-inputs');
+        if (stepNavBar) stepNavBar.style.display = 'flex';
         if (numBadge) numBadge.textContent = '2 / 3 단계';
         if (titleText) titleText.textContent = `설정 & 입력 (${activeScenarioName || '시나리오'})`;
         
@@ -694,6 +687,7 @@ function navigateToStep(stepName) {
         renderAllTimelines();
     } else if (stepName === 'results') {
         container.classList.add('step-results', 'mode-editor', 'mobile-show-results');
+        if (stepNavBar) stepNavBar.style.display = 'flex';
         if (numBadge) numBadge.textContent = '3 / 3 단계';
         if (titleText) titleText.textContent = `결과 그래프 & 명세 (${activeScenarioName || '시나리오'})`;
         
