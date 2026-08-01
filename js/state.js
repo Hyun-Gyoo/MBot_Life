@@ -7,8 +7,6 @@ const DEFAULT_SCENARIO = {
     simulationPeriod: 20,
     birthDate: "1970-06",
     startDate: "2026-07",
-    currentDate: "2026-08",
-    currentBalance: 350000000,
     
     // 실제 보유 자산 점검 이력
     balanceHistory: [],

@@ -1,6 +1,6 @@
 // --- Initialize Default Presets ---
 function initializeDefaultPresets() {
-    const CURRENT_VERSION = 'v4_empty_no_samples';
+    const CURRENT_VERSION = 'v5_clean_no_legacy_fields';
     const version = localStorage.getItem('mbot_life_presets_version');
     
     if (version !== CURRENT_VERSION) {
@@ -9,9 +9,14 @@ function initializeDefaultPresets() {
     }
     
     let presets = JSON.parse(localStorage.getItem('mbot_life_presets') || '{}');
-    if (Object.keys(presets).length === 0) {
-        // 사용자의 요청에 따라 시작 시 주어지는 샘플 시나리오를 모두 제거했습니다.
-        // 완전히 빈 화면에서 사용자가 직접 "+ 새 시나리오 생성"을 통해 시작하게 됩니다.
+    let modified = false;
+    Object.keys(presets).forEach(key => {
+        if (presets[key]) {
+            if ('currentDate' in presets[key]) { delete presets[key].currentDate; modified = true; }
+            if ('currentBalance' in presets[key]) { delete presets[key].currentBalance; modified = true; }
+        }
+    });
+    if (modified || Object.keys(presets).length === 0) {
         localStorage.setItem('mbot_life_presets', JSON.stringify(presets));
     }
 }
