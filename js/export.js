@@ -30,10 +30,6 @@ function generateDetailedLogs(state) {
         const currentYear = Number(yearStr);
         const currentMonth = Number(monthStr);
         
-        if (balanceHistoryMap[currentYM] !== undefined) {
-            currentBalance = balanceHistoryMap[currentYM];
-        }
-        
         const ageYears = currentYear - bYear;
         const ageMonths = currentMonth - bMonth;
         const exactAge = Math.floor(ageYears + ageMonths / 12);
@@ -42,6 +38,22 @@ function generateDetailedLogs(state) {
         const inflationFactor = Math.pow(1 + state.inflationRate / 100, m / 12);
         
         let monthlyLogs = [];
+        
+        // --- BALANCE HISTORY SNAPSHOT RESYNC LOG ---
+        if (balanceHistoryMap[currentYM] !== undefined) {
+            const targetBal = balanceHistoryMap[currentYM];
+            const diff = targetBal - currentBalance;
+            const bhItem = state.balanceHistory ? state.balanceHistory.find(bh => bh.date === currentYM) : null;
+            const labelStr = bhItem && bhItem.label ? ` (${bhItem.label})` : '';
+            
+            monthlyLogs.push({
+                date: currentYM,
+                age: exactAge,
+                type: '자산점검',
+                name: `실보유자산 점검보정${labelStr}`,
+                amount: diff
+            });
+        }
         
         // --- INFLOWS ---
         state.monthlyIncome.forEach(item => {

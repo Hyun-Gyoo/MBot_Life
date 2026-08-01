@@ -92,10 +92,15 @@ function renderTable() {
         if (log.amountReal > 0) amountRealClass = 'val-positive';
         else if (log.amountReal < 0) amountRealClass = 'val-negative';
         
+        let typeHtml = log.type;
+        if (log.type === '자산점검') {
+            typeHtml = `<span style="color:#a5b4fc; font-weight:bold;">📌 자산점검</span>`;
+        }
+        
         row.innerHTML = `
             <td>${log.date}</td>
             <td>만 ${log.age}세</td>
-            <td>${log.type}</td>
+            <td>${typeHtml}</td>
             <td>${log.name}</td>
             <td class="${amountRealClass}">${log.amountReal > 0 ? '+' : ''}${formatNumber(log.amountReal)}</td>
             <td class="val-total-assets ${log.balanceReal < 0 ? 'val-negative' : ''}">${formatNumber(log.balanceReal)}</td>
