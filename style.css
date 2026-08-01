@@ -996,17 +996,33 @@ table tbody tr:nth-child(even) {
     /* Toggle Visibility in Mobile Mode */
     .app-container.mobile-show-inputs .sidebar {
         display: flex !important;
+        width: 100% !important;
     }
     .app-container.mobile-show-inputs .main-content-landing,
-    .app-container.mobile-show-inputs .main-content-editor {
+    .app-container.mobile-show-inputs .main-content-active-scenario {
         display: none !important;
     }
     
     .app-container.mobile-show-results .sidebar {
         display: none !important;
     }
-    .app-container.mobile-show-results .main-content-editor {
+    .app-container.mobile-show-results .main-content-landing {
         display: block !important;
+        width: 100% !important;
+    }
+    .app-container.mobile-show-results .main-content-active-scenario {
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* Default fallback for mobile when no toggle class is set */
+    .app-container:not(.mobile-show-inputs):not(.mobile-show-results).mode-landing .main-content-landing {
+        display: block !important;
+        width: 100% !important;
+    }
+    .app-container:not(.mobile-show-inputs):not(.mobile-show-results).mode-editor .main-content-active-scenario {
+        display: block !important;
+        width: 100% !important;
     }
     
     /* Metrics Summary Cards Grid for Tablet/Mobile */

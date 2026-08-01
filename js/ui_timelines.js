@@ -34,7 +34,8 @@ function switchMobileTab(mode) {
         if (btnResults) btnResults.classList.add('active');
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
-        }, 100);
+            if (typeof renderCharts === 'function') renderCharts();
+        }, 50);
     }
 }
 
