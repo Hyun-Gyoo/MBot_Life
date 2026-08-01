@@ -7,11 +7,13 @@ window.addEventListener('DOMContentLoaded', () => {
     renderLandingView();
     
     // Listen to Enter/FocusOut on basic inputs to refresh
-    const inputs = ['initial-investment', 'annual-rate', 'inflation-rate', 'use-real-value', 'simulation-period', 'birth-year-month', 'start-year-month'];
+    const inputs = ['initial-investment', 'annual-rate', 'inflation-rate', 'use-real-value', 'simulation-period', 'birth-year-month', 'start-year-month', 'current-date', 'current-balance'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
-        el.addEventListener('change', () => {
-            runSimulation();
-        });
+        if (el) {
+            el.addEventListener('change', () => {
+                runSimulation();
+            });
+        }
     });
 });

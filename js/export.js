@@ -6,6 +6,8 @@ function generateDetailedLogs(state) {
     const annualRate = state.annualRate;
     const startYM = state.startDate;
     const birthYM = state.birthDate;
+    const currentDate = state.currentDate;
+    const targetCurrentBalance = state.currentBalance !== undefined ? state.currentBalance : initialAsset;
     const [bYear, bMonth] = birthYM.split('-').map(Number);
     
     const monthlyCompoundingRate = Math.pow(1 + annualRate / 100, 1 / 12) - 1;
@@ -19,6 +21,10 @@ function generateDetailedLogs(state) {
         const [yearStr, monthStr] = currentYM.split('-');
         const currentYear = Number(yearStr);
         const currentMonth = Number(monthStr);
+        
+        if (currentDate && currentYM === currentDate) {
+            currentBalance = targetCurrentBalance;
+        }
         
         const ageYears = currentYear - bYear;
         const ageMonths = currentMonth - bMonth;

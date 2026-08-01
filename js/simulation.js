@@ -7,6 +7,8 @@ function simulateScenario(state) {
     const annualRate = state.annualRate;
     const startYM = state.startDate;
     const birthYM = state.birthDate;
+    const currentDate = state.currentDate;
+    const targetCurrentBalance = state.currentBalance !== undefined ? state.currentBalance : initialAsset;
     
     const monthlyCompoundingRate = Math.pow(1 + annualRate / 100, 1 / 12) - 1;
     
@@ -20,6 +22,11 @@ function simulateScenario(state) {
         const [yearStr, monthStr] = currentYM.split('-');
         const currentYear = Number(yearStr);
         const currentMonth = Number(monthStr);
+        
+        // If currentYM matches currentDate, resync asset balance to targetCurrentBalance
+        if (currentDate && currentYM === currentDate) {
+            currentBalance = targetCurrentBalance;
+        }
         
         // Calculate age
         const [bYear, bMonth] = birthYM.split('-').map(Number);

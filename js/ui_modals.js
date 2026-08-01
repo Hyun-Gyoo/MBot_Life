@@ -649,6 +649,13 @@ function syncStateToInputs() {
     document.getElementById('simulation-period').value = currentState.simulationPeriod;
     document.getElementById('birth-year-month').value = currentState.birthDate;
     document.getElementById('start-year-month').value = currentState.startDate;
+    document.getElementById('current-date').value = currentState.currentDate || new Date().toISOString().substring(0,7);
+    document.getElementById('current-balance').value = Number(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment).toLocaleString();
+
+    const initKrw = document.getElementById('initial-investment-krw');
+    if (initKrw) initKrw.textContent = formatKRW(currentState.initialInvestment);
+    const currKrw = document.getElementById('current-balance-krw');
+    if (currKrw) currKrw.textContent = formatKRW(currentState.currentBalance !== undefined ? currentState.currentBalance : currentState.initialInvestment);
 }
 
 function runLandingComparison() {
@@ -839,7 +846,11 @@ function syncInputsToState() {
     currentState.simulationPeriod = Number(document.getElementById('simulation-period').value);
     currentState.birthDate = document.getElementById('birth-year-month').value;
     currentState.startDate = document.getElementById('start-year-month').value;
+    currentState.currentDate = document.getElementById('current-date').value;
+    currentState.currentBalance = Number(document.getElementById('current-balance').value.replace(/,/g, ''));
+    
     document.getElementById('initial-investment-krw').textContent = formatKRW(currentState.initialInvestment);
+    document.getElementById('current-balance-krw').textContent = formatKRW(currentState.currentBalance);
 }
 
 function downloadScenario(name) {
