@@ -697,6 +697,10 @@ function navigateToStep(stepName) {
         container.classList.add('step-results', 'mode-editor', 'mobile-show-results');
         if (stepNavBar) stepNavBar.style.display = 'flex';
         
+        // Synchronously force browser layout flush before chart calculation
+        void container.offsetHeight;
+        void document.body.offsetHeight;
+        
         if (prevBtn) {
             prevBtn.disabled = false;
             prevBtn.innerHTML = '◀ 이전 (설정&입력)';
@@ -707,11 +711,13 @@ function navigateToStep(stepName) {
         }
         
         runSimulation();
+        
+        // Double trigger renderCharts after paint
         requestAnimationFrame(() => {
+            if (typeof renderCharts === 'function') renderCharts();
             setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
                 if (typeof renderCharts === 'function') renderCharts();
-            }, 60);
+            }, 100);
         });
     }
 }

@@ -207,6 +207,7 @@ function renderActiveCashflowChart() {
         chart: {
             type: 'bar',
             height: 350,
+            width: '100%',
             foreColor: '#9ca3af',
             background: 'transparent',
             toolbar: { show: false },
@@ -333,7 +334,7 @@ function renderComparisonChart(comparisonData) {
         }
     });
     
-    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`);
+    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`);
     
     // Construct series data
     const series = comparisonData.map(cd => {
@@ -356,6 +357,7 @@ function renderComparisonChart(comparisonData) {
         chart: {
             type: 'line',
             height: 350,
+            width: '100%',
             foreColor: '#9ca3af',
             background: 'transparent',
             toolbar: { show: false },
@@ -373,7 +375,7 @@ function renderComparisonChart(comparisonData) {
             labels: {
                 rotate: -90,
                 rotateAlways: true,
-                maxHeight: 70,
+                maxHeight: 50,
                 style: {
                     fontSize: '11px',
                     colors: '#9ca3af'
@@ -403,9 +405,9 @@ function renderComparisonChart(comparisonData) {
         tooltip: {
             theme: 'dark',
             custom: function({ series, seriesIndex, dataPointIndex, w }) {
-                const catLabel = w.globals.categoryLabels[dataPointIndex] || (w.config.xaxis.categories ? w.config.xaxis.categories[dataPointIndex] : '') || '';
-                const yrStr = catLabel.split('년')[0];
-                const targetYear = parseInt(yrStr, 10);
+                const yrObj = longestResults[dataPointIndex];
+                const catLabel = yrObj ? `${yrObj.year}년 (만 ${yrObj.endAge}세)` : (w.globals.categoryLabels[dataPointIndex] || '');
+                const targetYear = yrObj ? yrObj.year : parseInt((catLabel.split('년')[0] || '0'), 10);
                 
                 let html = `<div style="padding: 12px; font-size: 13px; color: #fff; line-height: 1.5;">`;
                 html += `<div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 4px; color: #e2e8f0;">📅 ${catLabel}</div>`;
@@ -474,6 +476,11 @@ function renderComparisonChart(comparisonData) {
 }
 
 function renderCharts() {
+    const c1 = document.querySelector("#cashflow-chart");
+    const c2 = document.querySelector("#assets-chart");
+    if (c1) void c1.offsetWidth;
+    if (c2) void c2.offsetWidth;
+    
     renderActiveCashflowChart();
     const sim = simulateScenario(currentState);
     renderComparisonChart([{
