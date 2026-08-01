@@ -989,38 +989,52 @@ table tbody tr:nth-child(even) {
         overflow-x: hidden;
     }
     
-    .mobile-nav-bar {
-        display: grid;
+    /* Mobile Nav Bar - ONLY display in editor mode */
+    .app-container.mode-landing .mobile-nav-bar {
+        display: none !important;
+    }
+    .app-container.mode-editor .mobile-nav-bar {
+        display: grid !important;
     }
     
-    /* Toggle Visibility in Mobile Mode */
-    .app-container.mobile-show-inputs .sidebar {
+    /* 1. LANDING MODE (MBot 라이프 플래너 - 시나리오 관리/비교 페이지) */
+    .app-container.mode-landing .sidebar {
+        display: none !important;
+    }
+    .app-container.mode-landing .main-content-active-scenario {
+        display: none !important;
+    }
+    .app-container.mode-landing .main-content-landing {
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* 2. EDITOR MODE (개별 시나리오 편집 & 상세 분석 페이지) */
+    .app-container.mode-editor .main-content-landing {
+        display: none !important;
+    }
+    
+    .app-container.mode-editor.mobile-show-inputs .sidebar {
         display: flex !important;
         width: 100% !important;
     }
-    .app-container.mobile-show-inputs .main-content-landing,
-    .app-container.mobile-show-inputs .main-content-active-scenario {
+    .app-container.mode-editor.mobile-show-inputs .main-content-active-scenario {
         display: none !important;
     }
     
-    .app-container.mobile-show-results .sidebar {
+    .app-container.mode-editor.mobile-show-results .sidebar {
         display: none !important;
     }
-    .app-container.mobile-show-results .main-content-landing {
-        display: block !important;
-        width: 100% !important;
-    }
-    .app-container.mobile-show-results .main-content-active-scenario {
+    .app-container.mode-editor.mobile-show-results .main-content-active-scenario {
         display: block !important;
         width: 100% !important;
     }
     
-    /* Default fallback for mobile when no toggle class is set */
-    .app-container:not(.mobile-show-inputs):not(.mobile-show-results).mode-landing .main-content-landing {
-        display: block !important;
-        width: 100% !important;
+    /* Default fallback for editor mode when no mobile tab toggle class is set */
+    .app-container.mode-editor:not(.mobile-show-inputs):not(.mobile-show-results) .sidebar {
+        display: none !important;
     }
-    .app-container:not(.mobile-show-inputs):not(.mobile-show-results).mode-editor .main-content-active-scenario {
+    .app-container.mode-editor:not(.mobile-show-inputs):not(.mobile-show-results) .main-content-active-scenario {
         display: block !important;
         width: 100% !important;
     }

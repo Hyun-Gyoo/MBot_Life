@@ -656,6 +656,10 @@ function enterEditMode(name) {
         container.classList.add('mode-editor');
     }
     
+    if (typeof switchMobileTab === 'function') {
+        switchMobileTab('results');
+    }
+    
     const scenarioTitle = document.getElementById('active-scenario-title');
     if (scenarioTitle) {
         scenarioTitle.value = name;
@@ -672,7 +676,7 @@ function exitEditModeAndSave() {
     
     const container = document.getElementById('app-container');
     if (container) {
-        container.classList.remove('mode-editor');
+        container.classList.remove('mode-editor', 'mobile-show-inputs', 'mobile-show-results');
         container.classList.add('mode-landing');
     }
     renderLandingView();
