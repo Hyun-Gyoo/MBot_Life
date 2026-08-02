@@ -91,7 +91,8 @@ function simulateScenario(state) {
         
         // 3. Loans Borrow/Lend Inflow (grows with inflation ONLY if applyInflation is checked)
         state.loans.forEach(loan => {
-            const factor = loan.applyInflation ? inflationFactor : 1;
+            const borrowMonths = diffMonths(startYM, loan.borrowDate);
+            const factor = loan.applyInflation ? Math.pow(1 + state.inflationRate / 100, borrowMonths / 12) : 1;
             const isLend = loan.type === 'lend';
             
             if (currentYM === loan.borrowDate) {
@@ -131,7 +132,8 @@ function simulateScenario(state) {
         
         // 2. Loan & Lend Interest and Repayment/Lend Outflow
         state.loans.forEach(loan => {
-            const factor = loan.applyInflation ? inflationFactor : 1;
+            const borrowMonths = diffMonths(startYM, loan.borrowDate);
+            const factor = loan.applyInflation ? Math.pow(1 + state.inflationRate / 100, borrowMonths / 12) : 1;
             const isLend = loan.type === 'lend';
             const principal = loan.amount * factor;
             const isDeferred = !!loan.isDeferredInterest;

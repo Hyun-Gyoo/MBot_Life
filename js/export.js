@@ -91,7 +91,8 @@ function generateDetailedLogs(state) {
         }
         
         state.loans.forEach(loan => {
-            const factor = loan.applyInflation ? inflationFactor : 1;
+            const borrowMonths = diffMonths(startYM, loan.borrowDate);
+            const factor = loan.applyInflation ? Math.pow(1 + state.inflationRate / 100, borrowMonths / 12) : 1;
             const isLend = loan.type === 'lend';
             if (currentYM === loan.borrowDate) {
                 if (!isLend) {
@@ -126,7 +127,8 @@ function generateDetailedLogs(state) {
         });
         
         state.loans.forEach(loan => {
-            const factor = loan.applyInflation ? inflationFactor : 1;
+            const borrowMonths = diffMonths(startYM, loan.borrowDate);
+            const factor = loan.applyInflation ? Math.pow(1 + state.inflationRate / 100, borrowMonths / 12) : 1;
             const isLend = loan.type === 'lend';
             const principal = loan.amount * factor;
             const isDeferred = !!loan.isDeferredInterest;
