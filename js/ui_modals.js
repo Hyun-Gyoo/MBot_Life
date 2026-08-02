@@ -658,7 +658,25 @@ function navigateToStep(stepName) {
     const container = document.getElementById('app-container');
     if (!container) return;
     
+    const previousStep = currentStep;
     currentStep = stepName;
+    
+    if (history.state?.step !== stepName) {
+        if (stepName === 'list') {
+            if (previousStep !== 'list') {
+                if (history.state && history.state.step !== 'list') {
+                    history.back();
+                    return;
+                }
+            }
+        } else {
+            if (previousStep === 'list') {
+                history.pushState({ step: stepName }, '');
+            } else {
+                history.replaceState({ step: stepName }, '');
+            }
+        }
+    }
     
     // Clear all step and mode classes
     container.classList.remove('step-list', 'step-inputs', 'step-results', 'mode-landing', 'mode-editor', 'mobile-show-inputs', 'mobile-show-results');
@@ -889,7 +907,7 @@ function renderLandingComparisonChart(comparisonData) {
         }
     });
     
-    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`);
+    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`);
     const series = comparisonData.map(cd => {
         return {
             name: cd.name,
@@ -998,7 +1016,6 @@ function renderLandingComparisonChart(comparisonData) {
         try { landingChart.destroy(); } catch (e) {}
         landingChart = null;
     }
-    const containerEl = document.querySelector("#landing-comparison-chart");
     if (containerEl) {
         containerEl.innerHTML = "";
         landingChart = new ApexCharts(containerEl, opts);
@@ -1086,3 +1103,12 @@ function loadScenarioFromFile(event) {
     };
     reader.readAsText(file);
 }
+
+// Handle browser back / forward navigation
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.step) {
+        navigateToStep(event.state.step);
+    } else {
+        navigateToStep('list');
+    }
+});

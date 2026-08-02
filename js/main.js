@@ -1,5 +1,10 @@
 // --- App Initialization ---
 window.addEventListener('DOMContentLoaded', () => {
+    // Initialize history state if empty
+    if (!history.state) {
+        history.replaceState({ step: 'list' }, '');
+    }
+
     // Initialize default presets if local storage is empty
     initializeDefaultPresets();
     

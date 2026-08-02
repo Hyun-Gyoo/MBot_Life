@@ -491,7 +491,7 @@ input[type="month"]:focus {
 
 /* Metrics Cards Grid */
 .metrics-grid {
-    display: grid;
+    display: none !important;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 24px;
@@ -1284,4 +1284,12 @@ table tbody tr:nth-child(even) {
     }
 }
 
-
+/* PC Browser Screen (>= 1024px) Optimizations */
+@media (min-width: 1024px) {
+    #step-nav-bar {
+        display: none !important;
+    }
+    .sidebar-footer-action {
+        display: none !important;
+    }
+}

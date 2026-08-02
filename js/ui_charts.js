@@ -239,11 +239,11 @@ function renderActiveCashflowChart() {
             colors: ['transparent']
         },
         xaxis: {
-            categories: simulationResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`),
+            categories: simulationResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`),
             labels: {
                 rotate: -90,
                 rotateAlways: true,
-                maxHeight: 70,
+                maxHeight: 120,
                 style: {
                     fontSize: '11px',
                     colors: '#9ca3af'
@@ -316,7 +316,6 @@ function renderActiveCashflowChart() {
         try { cashflowChart.destroy(); } catch (e) {}
         cashflowChart = null;
     }
-    const containerEl = document.querySelector("#cashflow-chart");
     if (containerEl) {
         containerEl.innerHTML = "";
         cashflowChart = new ApexCharts(containerEl, cashflowChartOptions);
@@ -348,7 +347,7 @@ function renderComparisonChart(comparisonData) {
         }
     });
     
-    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년`);
+    const yearsLabels = longestResults.map(yr => `${String(yr.year).replace(/^20/, '')}년 (만 ${yr.endAge}세)`);
     
     // Construct series data
     const series = comparisonData.map(cd => {
@@ -389,7 +388,7 @@ function renderComparisonChart(comparisonData) {
             labels: {
                 rotate: -90,
                 rotateAlways: true,
-                maxHeight: 50,
+                maxHeight: 120,
                 style: {
                     fontSize: '11px',
                     colors: '#9ca3af'
@@ -481,7 +480,6 @@ function renderComparisonChart(comparisonData) {
         try { assetChart.destroy(); } catch (e) {}
         assetChart = null;
     }
-    const containerEl = document.querySelector("#assets-chart");
     if (containerEl) {
         containerEl.innerHTML = "";
         assetChart = new ApexCharts(containerEl, assetChartOptions);
