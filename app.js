@@ -1151,12 +1151,13 @@ function renderLandingView() {
         
         const card = document.createElement('div');
         card.className = 'scenario-card';
+        card.dataset.scenarioName = name;
         card.innerHTML = `
             <div class="scenario-card-header">
                 <h3>${name}</h3>
                 <div class="scenario-actions">
-                    <button class="btn btn-secondary" onclick="enterEditMode('${name}')">편집</button>
-                    <button class="btn btn-secondary btn-delete" onclick="deleteScenario('${name}')">삭제</button>
+                    <button class="btn btn-secondary" onclick="enterEditMode(this.closest('.scenario-card').dataset.scenarioName)">편집</button>
+                    <button class="btn btn-secondary btn-delete" onclick="deleteScenario(this.closest('.scenario-card').dataset.scenarioName)">삭제</button>
                 </div>
             </div>
             <div class="scenario-card-body">

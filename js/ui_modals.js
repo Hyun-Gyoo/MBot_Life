@@ -561,6 +561,7 @@ function renderLandingView() {
         
         const card = document.createElement('div');
         card.className = 'scenario-card';
+        card.dataset.scenarioName = name;
         card.innerHTML = `
             <div class="scenario-card-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <h3 style="margin: 0; padding-right: 10px; word-break: break-all;">${name}</h3>
@@ -570,9 +571,9 @@ function renderLandingView() {
                 <div>초기 자본: <strong>${formatKRW(state.initialInvestment)}</strong></div>
                 <div>최종 자산: <strong style="color:var(--color-indigo); font-size:16px;">${formatKRW(simResult.metrics.endingAssets)}</strong></div>
                 <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
-                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="downloadScenario('${name}')">저장</button>
-                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="enterEditMode('${name}')">편집</button>
-                    <button class="btn btn-secondary btn-delete" style="padding: 6px 14px; font-size: 13px; width: auto; height: auto; margin: 0; display: inline-block; line-height: normal;" onclick="deleteScenario('${name}')">삭제</button>
+                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="downloadScenario(this.closest('.scenario-card').dataset.scenarioName)">저장</button>
+                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;" onclick="enterEditMode(this.closest('.scenario-card').dataset.scenarioName)">편집</button>
+                    <button class="btn btn-secondary btn-delete" style="padding: 6px 14px; font-size: 13px; width: auto; height: auto; margin: 0; display: inline-block; line-height: normal;" onclick="deleteScenario(this.closest('.scenario-card').dataset.scenarioName)">삭제</button>
                 </div>
             </div>
         `;
