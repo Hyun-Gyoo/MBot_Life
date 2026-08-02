@@ -254,6 +254,9 @@ function renderActiveCashflowChart() {
         },
         yaxis: {
             labels: {
+                style: {
+                    fontSize: '18px'
+                },
                 formatter: function (value) {
                     if (value === 0) return '0';
                     const isNegative = value < 0;
@@ -429,6 +432,9 @@ function renderComparisonChart(comparisonData) {
         },
         yaxis: {
             labels: {
+                style: {
+                    fontSize: '18px'
+                },
                 formatter: function (value) {
                     return (value / 100000000).toFixed(1) + ' 억';
                 }
