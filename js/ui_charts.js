@@ -245,7 +245,7 @@ function renderActiveCashflowChart() {
                 rotateAlways: true,
                 maxHeight: 120,
                 style: {
-                    fontSize: '11px',
+                    fontSize: '18px',
                     colors: '#9ca3af'
                 }
             },
@@ -255,7 +255,37 @@ function renderActiveCashflowChart() {
         yaxis: {
             labels: {
                 formatter: function (value) {
-                    return (value / 10000).toFixed(0) + ' 만';
+                    if (value === 0) return '0';
+                    const isNegative = value < 0;
+                    let absVal = Math.abs(value);
+                    const EOK = 100000000;
+                    const MAN = 10000;
+                    let result = '';
+                    if (absVal >= EOK) {
+                        const eokPart = Math.floor(absVal / EOK);
+                        absVal %= EOK;
+                        result += `${eokPart}억`;
+                        if (absVal >= MAN) {
+                            const manPart = Math.floor(absVal / MAN);
+                            if (manPart > 0) {
+                                if (manPart % 1000 === 0) {
+                                    result += ` ${manPart / 1000}천만`;
+                                } else {
+                                    result += ` ${manPart}만`;
+                                }
+                            }
+                        }
+                    } else if (absVal >= MAN) {
+                        const manPart = Math.floor(absVal / MAN);
+                        if (manPart % 1000 === 0) {
+                            result += `${manPart / 1000}천만`;
+                        } else {
+                            result += `${manPart}만`;
+                        }
+                    } else {
+                        result += absVal;
+                    }
+                    return (isNegative ? '-' : '') + result;
                 }
             }
         },
@@ -390,7 +420,7 @@ function renderComparisonChart(comparisonData) {
                 rotateAlways: true,
                 maxHeight: 120,
                 style: {
-                    fontSize: '11px',
+                    fontSize: '18px',
                     colors: '#9ca3af'
                 }
             },
