@@ -1387,10 +1387,21 @@ function renderLandingComparisonChart(comparisonData) {
         colors: ['#6366f1', '#10b981', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4'],
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
-        xaxis: { categories: yearsLabels },
+        xaxis: { 
+            categories: yearsLabels,
+            labels: {
+                style: {
+                    fontSize: '18px',
+                    colors: '#9ca3af'
+                }
+            }
+        },
         yaxis: {
             labels: {
-                formatter: function(value) { return (value / 100000000).toFixed(1) + ' 억'; }
+                style: {
+                    fontSize: '18px'
+                },
+                formatter: function(value) { return (value / 100000000).toFixed(0) + '억'; }
             }
         },
         grid: { borderColor: 'rgba(255, 255, 255, 0.05)' },

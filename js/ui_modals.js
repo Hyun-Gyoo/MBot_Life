@@ -937,14 +937,17 @@ function renderLandingComparisonChart(comparisonData) {
                 rotateAlways: true,
                 maxHeight: 70,
                 style: {
-                    fontSize: '11px',
+                    fontSize: '18px',
                     colors: '#9ca3af'
                 }
             }
         },
         yaxis: {
             labels: {
-                formatter: function(value) { return (value / 100000000).toFixed(1) + ' 억'; }
+                style: {
+                    fontSize: '18px'
+                },
+                formatter: function(value) { return (value / 100000000).toFixed(0) + '억'; }
             }
         },
         grid: { 

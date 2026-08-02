@@ -436,7 +436,7 @@ function renderComparisonChart(comparisonData) {
                     fontSize: '18px'
                 },
                 formatter: function (value) {
-                    return (value / 100000000).toFixed(1) + ' 억';
+                    return (value / 100000000).toFixed(0) + '억';
                 }
             }
         },
