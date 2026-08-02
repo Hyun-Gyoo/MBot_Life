@@ -60,8 +60,31 @@ body {
 /* Layout Grid */
 .app-container {
     display: flex;
-    min-height: 100vh;
+    flex-direction: column;
+    height: 100vh;
     width: 100vw;
+    overflow: hidden;
+}
+
+.app-body-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.editor-top-header {
+    display: none;
+    width: 100%;
+    padding: 16px 30px;
+    background-color: rgba(11, 15, 25, 0.95);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-container.mode-editor .editor-top-header {
+    display: block;
 }
 
 /* Sidebar Styling - Expanded for 150% Font Size */
@@ -72,9 +95,7 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    height: 100vh;
-    position: sticky;
-    top: 0;
+    height: 100%;
     overflow-y: auto;
 }
 
@@ -471,7 +492,7 @@ input[type="month"]:focus {
 .main-content {
     flex-grow: 1;
     padding: 30px;
-    height: 100vh;
+    height: 100%;
     overflow-y: auto;
     background: radial-gradient(circle at 50% 0%, #0d162a 0%, #080c14 70%);
 }
@@ -997,7 +1018,15 @@ table tbody tr:nth-child(even) {
     .app-container {
         flex-direction: column !important;
         width: 100% !important;
-        min-height: 100vh;
+        min-height: 100vh !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .app-body-wrapper {
+        flex-direction: column !important;
+        height: auto !important;
+        overflow: visible !important;
     }
     
     .sidebar {
